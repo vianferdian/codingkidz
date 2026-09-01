@@ -1,0 +1,27 @@
+{% for notif in all_notifications %}
+<li class="p-3 border-bottom {% if not notif.is_read %}bg-light-primary{% else %}bg-white{% endif %}" style="transition: all 0.3s ease;">
+    <div class="d-flex align-items-start">
+        <div class="me-3">
+            {% if notif.type == 'PAYMENT' %}
+                <span class="btn btn-success btn-xs px-2 shadow-sm" style="border-radius: 6px;"><i class="fa fa-credit-card"></i></span>
+            {% elif notif.type == 'PROJECT' %}
+                <span class="btn btn-info btn-xs px-2 shadow-sm" style="border-radius: 6px;"><i class="fa fa-book"></i></span>
+            {% elif notif.type == 'SCHEDULE' %}
+                <span class="btn btn-warning btn-xs px-2 shadow-sm" style="border-radius: 6px;"><i class="fa fa-calendar"></i></span>
+            {% else %}
+                <span class="btn btn-secondary btn-xs px-2 shadow-sm" style="border-radius: 6px;"><i class="fa fa-bell"></i></span>
+            {% endif %}
+        </div>
+        <div class="w-100">
+            <h6 class="mb-1 text-black font-w800" style="font-size: 13px;">{{ notif.title }}</h6>
+            <p class="mb-1 text-dark" style="font-size: 12px; line-height: 1.4; font-family: 'Poppins', sans-serif;">{{ notif.message }}</p>
+            <span class="text-muted" style="font-size: 11px;"><i class="fa fa-clock-o me-1"></i> {{ notif.created_at|timesince }} yang lalu</span>
+        </div>
+    </div>
+</li>
+{% empty %}
+<li class="text-center p-5">
+    <i class="fa fa-bell-slash-o text-muted fs-30 mb-3 d-block"></i>
+    <span class="text-muted">Tidak ada notifikasi baru untuk Anda.</span>
+</li>
+{% endfor %}

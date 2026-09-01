@@ -1,0 +1,41 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Kelas Les Yang Saya Ajar</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for enrollment in enrollments %}
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card border">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary"><strong>{{ enrollment.course.name }}</strong></h5>
+                                <p class="card-text text-muted">Siswa: {{ enrollment.student.user.first_name }} {{ enrollment.student.user.last_name }}</p>
+                                <hr>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Total Sesi: <strong>{{ enrollment.course.total_sessions }}</strong></span>
+                                    {% if enrollment.status == 'ACTIVE' %}
+                                        <span class="badge light badge-success">Aktif</span>
+                                    {% else %}
+                                        <span class="badge light badge-secondary">{{ enrollment.status }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-center p-5">
+                        <p class="text-muted">Belum ada kelas les yang ditugaskan kepada Anda saat ini.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

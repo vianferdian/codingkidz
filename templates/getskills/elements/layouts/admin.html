@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static custom_tags %}
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="keywords" content="" />
+	<meta name="author" content="" />
+	<meta name="robots" content="" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="{{ dz_array.public.description }}" />
+	<meta property="og:title" content="{{ dz_array.public.og_title }}" />
+	<meta property="og:description" content="{{ dz_array.public.og_description }}" />
+	<meta property="og:image" content="{{ dz_array.public.og_image }}" />
+	<meta name="format-detection" content="telephone=no">
+	
+	<!-- PAGE TITLE HERE -->
+	<title>{{ dz_array.public.title }}</title>
+	
+	<!-- FAVICONS ICON -->
+	<link rel="shortcut icon" type="image/png" href="{% static 'getskills/images/gamepad.png' %}" />
+
+    {% for cssurl in dz_array.pagelevel.getskills.getskills_views.css|getdata:request.path %}
+    <link rel="stylesheet" href="{% static cssurl %}" >
+	{% endfor %}
+    {% for cssurl in dz_array.global.css %}
+    <link rel="stylesheet" href="{% static cssurl %}">
+	{% endfor %}
+    <link rel="stylesheet" href="{% static 'getskills/vendor/sweetalert2/dist/sweetalert2.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+	
+    <style>
+        .custom-swal-popup {
+            border-radius: 16px !important;
+            font-family: inherit !important;
+            padding: 1.75rem 1.5rem !important;
+        }
+        .swal2-title {
+            font-size: 1.25rem !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+        }
+        .swal2-html-container {
+            font-size: 0.95rem !important;
+            color: #475569 !important;
+        }
+        :root {
+            /* ===== TEMA MERAH & HITAM ===== */
+            --primary: #e11d48; /* Merah Crimson */
+            --primary-hover: #be123c;
+            --primary-dark: #9f1239;
+            --secondary: #0f172a; /* Hitam Charcoal */
+            --secondary-dark: #020617;
+            
+            --rgba-primary-1: rgba(225, 29, 72, 0.1);
+            --rgba-primary-2: rgba(225, 29, 72, 0.2);
+            --rgba-primary-3: rgba(225, 29, 72, 0.3);
+            --rgba-primary-4: rgba(225, 29, 72, 0.4);
+            --rgba-primary-5: rgba(225, 29, 72, 0.5);
+            --rgba-primary-6: rgba(225, 29, 72, 0.6);
+            --rgba-primary-7: rgba(225, 29, 72, 0.7);
+            --rgba-primary-8: rgba(225, 29, 72, 0.8);
+            --rgba-primary-9: rgba(225, 29, 72, 0.9);
+            
+            --rgba-secondary-1: rgba(15, 23, 42, 0.1);
+            --rgba-secondary-2: rgba(15, 23, 42, 0.2);
+            --rgba-secondary-3: rgba(15, 23, 42, 0.3);
+            --rgba-secondary-4: rgba(15, 23, 42, 0.4);
+            --rgba-secondary-5: rgba(15, 23, 42, 0.5);
+            --rgba-secondary-6: rgba(15, 23, 42, 0.6);
+            --rgba-secondary-7: rgba(15, 23, 42, 0.7);
+            --rgba-secondary-8: rgba(15, 23, 42, 0.8);
+            --rgba-secondary-9: rgba(15, 23, 42, 0.9);
+        }
+        
+        /* Tambahan override untuk memperkuat warna tema */
+        .btn-primary {
+            background-color: var(--primary) !important;
+            border-color: var(--primary) !important;
+            color: #fff !important;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover) !important;
+            border-color: var(--primary-hover) !important;
+        }
+        .text-primary {
+            color: var(--primary) !important;
+        }
+        
+        /* Refined Sidebar Active & Expand State Styling */
+        .dlabnav .metismenu > li.mm-active > a.has-arrow {
+            background-color: var(--rgba-primary-1) !important;
+            color: var(--primary) !important;
+            border-radius: 0.75rem;
+        }
+        .dlabnav .metismenu > li.mm-active > a.has-arrow i {
+            color: var(--primary) !important;
+        }
+        .dlabnav .metismenu .mm-show li.mm-active > a {
+            background-color: var(--primary) !important;
+            color: #ffffff !important;
+            border-radius: 0.5rem;
+        }
+    </style>
+    {% block additional_css %}
+    {% endblock %}
+
+</head>
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+		<div class="lds-ripple">
+			<div></div>
+			<div></div>
+		</div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+		{% include 'getskills/elements/ellipse.html' %}
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+		{% include 'getskills/elements/nav-header.html' %}
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+		
+		<!--**********************************
+            Chat box start
+        ***********************************-->
+		{% include 'getskills/elements/chatbox.html' %}
+		<!--**********************************
+            Chat box End
+        ***********************************-->
+		
+		<!--**********************************
+            Header start
+        ***********************************-->
+		{% include 'getskills/elements/header.html' %}
+
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+		{% include 'getskills/elements/sidebar.html' %}
+
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+		
+		<!--**********************************
+            Content body start
+        ***********************************-->
+
+
+        <div class="content-body">
+            <div class="container-fluid">
+                {% block message %}
+                {% endblock %}
+                
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+		
+		
+		
+        <!--**********************************
+            Footer start
+        ***********************************-->
+		{% include 'getskills/elements/footer.html' %}
+
+        <!--**********************************
+            Footer end
+        ***********************************-->
+
+		<!--**********************************
+           Support ticket button start
+        ***********************************-->
+		
+        <!--**********************************
+           Support ticket button end
+        ***********************************-->
+
+
+	</div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+
+    {% for jsurl in dz_array.global.js.top %}
+    <script src="{% static jsurl %}"></script>
+    {% endfor %}
+    
+    {% for jsurl in dz_array.pagelevel.getskills.getskills_views.js|getdata:request.path %}
+    <script src="{% static jsurl %}"></script>
+    {% endfor %}
+    
+    {% for jsurl in dz_array.global.js.bottom %}
+    <script src="{% static jsurl %}"></script>
+    {% endfor %}
+    <script src="{% static 'getskills/vendor/sweetalert2/dist/sweetalert2.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function handleDelete(url, msg) {
+            let targetUrl = url;
+            let targetMsg = msg || 'Apakah Anda yakin ingin menghapus data ini?';
+
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Konfirmasi Hapus',
+                    text: targetMsg,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e11d48',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: '<i class="fa fa-trash me-1"></i> Ya, Hapus',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true,
+                    customClass: {
+                        popup: 'custom-swal-popup shadow-lg',
+                        confirmButton: 'btn btn-danger btn-sm px-4 ms-2 shadow-sm',
+                        cancelButton: 'btn btn-light btn-sm px-4 shadow-sm'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = targetUrl;
+                    }
+                });
+            } else {
+                if (confirm(targetMsg)) {
+                    window.location.href = targetUrl;
+                }
+            }
+            return false;
+        }
+
+        function confirmDelete(event, msg) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            let target = event ? (event.currentTarget || event.target) : null;
+            let href = target ? target.getAttribute('href') : null;
+            return handleDelete(href, msg);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            function convertConfirmElements() {
+                const confirmElements = document.querySelectorAll('[onclick*="confirm("]');
+                confirmElements.forEach(function(el) {
+                    let rawAttr = el.getAttribute('onclick');
+                    if (rawAttr && rawAttr.includes('confirm(') && !rawAttr.includes('handleDelete')) {
+                        let match = rawAttr.match(/confirm\((['"])(.*?)\1\)/);
+                        let msg = match ? match[2] : 'Apakah Anda yakin ingin menghapus data ini?';
+                        let href = el.getAttribute('href');
+                        el.setAttribute('onclick', `return handleDelete('${href}', '${msg.replace(/'/g, "\\'")}');`);
+                    }
+                });
+            }
+            convertConfirmElements();
+            setTimeout(convertConfirmElements, 300);
+        });
+    </script>
+    
+    {% block additional_js %}
+    {% endblock %}
+
+    {% if request.user.is_authenticated %}
+    <script>
+        function checkNotifications() {
+            fetch('{% url "notifications:api_notifications" %}')
+                .then(response => response.json())
+                .then(data => {
+                    const badge = document.querySelector('.notification_dropdown .badge');
+                    if (data.unread_count > 0) {
+                        if (badge) {
+                            badge.textContent = data.unread_count;
+                            badge.style.display = 'inline-block';
+                        } else {
+                            const bellLink = document.querySelector('.notification_dropdown .bell-link');
+                            if (bellLink) {
+                                const newBadge = document.createElement('span');
+                                newBadge.className = 'badge rounded-circle bg-danger text-white position-absolute';
+                                newBadge.style.cssText = 'top: -2px; right: -2px; font-size: 9px; padding: 2px 5px; min-width: 14px; text-align: center;';
+                                newBadge.textContent = data.unread_count;
+                                bellLink.appendChild(newBadge);
+                            }
+                        }
+                        
+                        const readAllBtn = document.querySelector('.chatbox .chat-list-header .btn');
+                        if (!readAllBtn) {
+                            const header = document.querySelector('.chatbox .chat-list-header');
+                            if (header) {
+                                const newBtn = document.createElement('a');
+                                newBtn.href = '{% url "notifications:mark_all_read" %}';
+                                newBtn.className = 'btn btn-primary btn-xxs shadow';
+                                newBtn.textContent = 'Baca Semua';
+                                header.appendChild(newBtn);
+                            }
+                        }
+                    } else {
+                        if (badge) {
+                            badge.style.display = 'none';
+                        }
+                        const readAllBtn = document.querySelector('.chatbox .chat-list-header .btn');
+                        if (readAllBtn) {
+                            readAllBtn.remove();
+                        }
+                    }
+                    
+                    const container = document.getElementById('notification-list-container');
+                    if (container) {
+                        container.innerHTML = data.html;
+                    }
+                })
+                .catch(err => console.error("Error checking notifications:", err));
+        }
+        
+        function markAllNotificationsRead() {
+            fetch('{% url "notifications:mark_all_read" %}?ajax=1', {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).then(() => {
+                const badge = document.querySelector('.notification_dropdown .badge');
+                if (badge) badge.style.display = 'none';
+                checkNotifications();
+            }).catch(err => console.error("Error marking read:", err));
+        }
+
+        // Poll every 10 seconds
+        setInterval(checkNotifications, 10000);
+        
+        // Initial run on page load and attach click listeners to bell icon
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkNotifications, 1000);
+
+            const bellLinks = document.querySelectorAll('.notification_dropdown .bell-link, .notification_dropdown');
+            bellLinks.forEach(function(el) {
+                el.addEventListener('click', function() {
+                    markAllNotificationsRead();
+                });
+            });
+        });
+    </script>
+    {% endif %}
+
+</body>
+</html>

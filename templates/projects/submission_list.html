@@ -1,0 +1,77 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title">Daftar Pengumpulan Tugas Siswa</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-responsive-md">
+                        <thead>
+                            <tr>
+                                <th><strong>Siswa</strong></th>
+                                <th><strong>Project / Tugas</strong></th>
+                                <th><strong>Tipe</strong></th>
+                                <th><strong>Tanggal Kumpul</strong></th>
+                                <th><strong>Status</strong></th>
+                                <th><strong>Nilai</strong></th>
+                                <th><strong>Aksi</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for submission in submissions %}
+                            <tr>
+                                <td>
+                                    <strong>{{ submission.student.user.first_name }} {{ submission.student.user.last_name }}</strong>
+                                    <br><small class="text-muted">{{ submission.student.student_code }}</small>
+                                </td>
+                                <td>{{ submission.project.title }}</td>
+                                <td>
+                                    {% if submission.submission_type == 'FILE' %}
+                                        <span class="badge light badge-info">File</span>
+                                    {% elif submission.submission_type == 'LINK' %}
+                                        <span class="badge light badge-warning">Link</span>
+                                    {% else %}
+                                        <span class="badge light badge-dark">Both</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ submission.submitted_at|date:"d M Y H:i" }}</td>
+                                <td>
+                                    {% if submission.status == 'COMPLETED' %}
+                                        <span class="badge light badge-success">Approved / Selesai</span>
+                                    {% elif submission.status == 'SUBMITTED' %}
+                                        <span class="badge light badge-warning">Menunggu Review</span>
+                                    {% elif submission.status == 'REVIEWED' %}
+                                        <span class="badge light badge-info">Sudah Dinilai</span>
+                                    {% else %}
+                                        <span class="badge light badge-danger">{{ submission.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if submission.score %}
+                                        <strong class="text-success">{{ submission.score }}</strong> / {{ submission.project.max_score }}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'projects:review_submission' submission.id %}" class="btn btn-warning btn-xxs shadow"><i class="fa fa-edit"></i> Review & Nilai</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">Belum ada tugas yang dikumpulkan oleh siswa.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

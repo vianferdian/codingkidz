@@ -1,0 +1,67 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        {% include 'getskills/elements/alert.html' %}
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title">Kelola QRIS Pembayaran</h4>
+                <a href="{% url 'payments:admin_add_qris' %}" class="btn btn-primary btn-sm shadow"><i class="fa fa-plus me-1"></i> Tambah QRIS</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-responsive-md">
+                        <thead>
+                            <tr>
+                                <th><strong>Gambar QRIS</strong></th>
+                                <th><strong>Nama QRIS / Label</strong></th>
+                                <th><strong>Catatan</strong></th>
+                                <th><strong>Status</strong></th>
+                                <th><strong>Aksi</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for qris in qris_list %}
+                            <tr>
+                                <td>
+                                    {% if qris.qris_image %}
+                                        <a href="{{ qris.qris_image.url }}" target="_blank">
+                                            <img src="{{ qris.qris_image.url }}" class="rounded shadow-sm" width="80" style="max-height:80px; object-fit:contain;" alt="{{ qris.name }}" />
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td><strong>{{ qris.name }}</strong></td>
+                                <td>{{ qris.notes|default:"-" }}</td>
+                                <td>
+                                    {% if qris.status %}
+                                        <span class="badge light badge-success">Aktif / Digunakan</span>
+                                    {% else %}
+                                        <span class="badge light badge-danger">Nonaktif</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <a href="{% url 'payments:admin_edit_qris' qris.id %}" class="btn btn-warning btn-xxs shadow"><i class="fa fa-edit"></i> Edit</a>
+                                        <a href="{% url 'payments:admin_delete_qris' qris.id %}" class="btn btn-danger btn-xxs shadow" onclick="return handleDelete(this.href, 'Apakah Anda yakin ingin menghapus QRIS ini?');"><i class="fa fa-trash"></i> Hapus</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center p-4">
+                                    <p class="text-muted mb-0">Belum ada gambar QRIS yang diunggah. Silakan klik <strong>Tambah QRIS</strong> untuk mengunggah barcode QRIS pembayaran.</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

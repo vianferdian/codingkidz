@@ -1,0 +1,84 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title">Daftar Tagihan Anda</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-responsive-md">
+                        <thead>
+                            <tr>
+                                <th><strong>No. Invoice</strong></th>
+                                <th><strong>Program/Kelas</strong></th>
+                                <th><strong>Pertemuan</strong></th>
+                                <th><strong>Jumlah Tagihan</strong></th>
+                                <th><strong>Jatuh Tempo</strong></th>
+                                <th><strong>Status</strong></th>
+                                <th><strong>Aksi</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for invoice in invoices %}
+                            <tr>
+                                <td><strong>{{ invoice.invoice_number }}</strong></td>
+                                <td>{{ invoice.course.name }}</td>
+                                <td>
+                                    {% if invoice.course_session %}
+                                        Sesi #{{ invoice.course_session.session_number }}
+                                    {% else %}
+                                        Umum / Paket
+                                    {% endif %}
+                                </td>
+                                <td>Rp {{ invoice.amount }}</td>
+                                <td>{{ invoice.due_date }}</td>
+                                <td>
+                                    {% if invoice.status == 'PAID' %}
+                                        <span class="badge light badge-success">Lunas</span>
+                                    {% elif invoice.status == 'UNPAID' %}
+                                        <span class="badge light badge-danger">Belum Bayar</span>
+                                    {% else %}
+                                        <span class="badge light badge-dark">{{ invoice.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        {% if invoice.status == 'UNPAID' %}
+                                            {% if invoice.has_pending_payment %}
+                                                <button class="btn btn-warning btn-xxs" disabled><i class="fa fa-clock-o me-1"></i> Menunggu Verifikasi</button>
+                                            {% else %}
+                                                {% if invoice.can_pay %}
+                                                    <a href="{% url 'payments:student_pay_invoice' invoice.id %}" class="btn btn-primary btn-xxs shadow">Bayar Sekarang</a>
+                                                {% else %}
+                                                    <button class="btn btn-light btn-xxs" disabled title="Pembayaran baru dapat dilakukan mulai tanggal 1">Belum Mulai</button>
+                                                {% endif %}
+                                            {% endif %}
+                                            <a href="{% url 'payments:download_invoice_pdf' invoice.id %}" class="btn btn-info btn-xxs shadow"><i class="fa fa-download me-1"></i> PDF Tagihan</a>
+                                        {% else %}
+                                            <span class="badge light badge-success me-2 align-self-center"><i class="fa fa-check-circle me-1"></i> Selesai</span>
+                                            {% for payment in invoice.payments.all %}
+                                                {% if payment.status == 'VERIFIED' %}
+                                                    <a href="{% url 'payments:download_receipt_pdf' payment.id %}" class="btn btn-success btn-xxs shadow"><i class="fa fa-download me-1"></i> PDF Kuitansi</a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">Tidak ada tagihan pembayaran saat ini.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

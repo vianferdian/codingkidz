@@ -1,0 +1,56 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Riwayat Kehadiran Les Saya</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-responsive-md">
+                        <thead>
+                            <tr>
+                                <th><strong>Tanggal Pertemuan</strong></th>
+                                <th><strong>Program / Kelas</strong></th>
+                                <th><strong>Sesi #</strong></th>
+                                <th><strong>Status Kehadiran</strong></th>
+                                <th><strong>Waktu Absen</strong></th>
+                                <th><strong>Catatan</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for attendance in attendances %}
+                            <tr>
+                                <td>{{ attendance.course_session.session_date }}</td>
+                                <td>{{ attendance.course_session.course.name }}</td>
+                                <td><strong>#{{ attendance.course_session.session_number }}</strong></td>
+                                <td>
+                                    {% if attendance.status == 'HADIR' %}
+                                        <span class="badge light badge-success">Hadir</span>
+                                    {% elif attendance.status == 'IZIN' %}
+                                        <span class="badge light badge-info">Izin</span>
+                                    {% elif attendance.status == 'SAKIT' %}
+                                        <span class="badge light badge-warning">Sakit</span>
+                                    {% else %}
+                                        <span class="badge light badge-danger">Alpa</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ attendance.check_in_at|default:"-" }}</td>
+                                <td>{{ attendance.notes|default:"-" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">Belum ada riwayat kehadiran tercatat.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

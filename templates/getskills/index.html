@@ -1,0 +1,606 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static %}
+
+{% block additional_css %}
+<style>
+    /* ===== WELCOME BANNER (DARK PREMIUM & MINIMALIST) ===== */
+    .nck-welcome-card {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border-radius: 12px;
+        padding: 30px 34px;
+        position: relative;
+        overflow: hidden;
+        color: #fff;
+        border: 1px solid #334155;
+    }
+    .nck-welcome-card::before {
+        content: '';
+        position: absolute;
+        top: -60px; right: -60px;
+        width: 220px; height: 220px;
+        background: radial-gradient(circle, rgba(255, 106, 89, 0.2) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    .nck-welcome-card::after {
+        content: '';
+        position: absolute;
+        bottom: -50px; right: 100px;
+        width: 140px; height: 140px;
+        background: radial-gradient(circle, rgba(76, 188, 154, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    .nck-welcome-card .badge-role {
+        background: rgba(255, 106, 89, 0.12);
+        border: 1px solid rgba(255, 106, 89, 0.35);
+        color: #ff8e80;
+        border-radius: 4px;
+        padding: 4px 12px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        display: inline-block;
+        margin-bottom: 12px;
+    }
+    .nck-welcome-card h3 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 8px;
+        letter-spacing: -0.5px;
+    }
+    .nck-welcome-card p {
+        font-size: 13.5px;
+        color: #94a3b8;
+        margin-bottom: 0;
+        max-width: 500px;
+        line-height: 1.6;
+    }
+    .nck-welcome-card .deco-code {
+        position: absolute;
+        top: 24px; right: 30px;
+        font-size: 48px;
+        opacity: 0.08;
+        font-family: monospace;
+        font-weight: 900;
+        color: #fff;
+    }
+    .nck-welcome-card .live-time {
+        font-size: 11px;
+        color: #64748b;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* ===== STAT CARDS (CLEAN & MODERN & FLAT) ===== */
+    .nck-stat {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 22px 24px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        transition: all .25s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+    }
+    [data-theme-version="dark"] .nck-stat {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    .nck-stat:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+        border-color: #cbd5e1;
+    }
+    [data-theme-version="dark"] .nck-stat:hover {
+        border-color: #475569;
+    }
+    .nck-stat .nck-stat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+    }
+    .nck-stat .nck-stat-icon {
+        width: 42px; height: 42px;
+        border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px;
+    }
+    /* Stat Icon Color Accent Variables */
+    .nck-icon-primary { background: rgba(255, 106, 89, 0.1); color: var(--primary); }
+    .nck-icon-secondary { background: rgba(76, 188, 154, 0.1); color: var(--secondary); }
+    .nck-icon-warn { background: rgba(247, 164, 64, 0.1); color: #f7a440; }
+    .nck-icon-info { background: rgba(91, 141, 238, 0.1); color: #5b8dee; }
+    .nck-icon-dark { background: rgba(55, 69, 87, 0.1); color: #374557; }
+    [data-theme-version="dark"] .nck-icon-dark { background: rgba(255, 255, 255, 0.08); color: #cbd5e1; }
+    .nck-icon-green { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+
+    .nck-stat .nck-stat-val {
+        font-size: 26px;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.2;
+        margin-bottom: 2px;
+    }
+    [data-theme-version="dark"] .nck-stat .nck-stat-val {
+        color: #f1f5f9;
+    }
+    .nck-stat .nck-stat-lbl {
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #64748b;
+    }
+    [data-theme-version="dark"] .nck-stat .nck-stat-lbl {
+        color: #94a3b8;
+    }
+
+    /* ===== QUICK LINK ITEMS (ELEGANT FLAT) ===== */
+    .nck-quick-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        text-decoration: none;
+        color: #334155;
+        margin-bottom: 10px;
+        transition: all .2s ease;
+    }
+    [data-theme-version="dark"] .nck-quick-item {
+        background: #1e293b;
+        border-color: #334155;
+        color: #cbd5e1;
+    }
+    .nck-quick-item:hover {
+        border-color: var(--primary);
+        background: #fff8f7;
+        color: var(--primary);
+        text-decoration: none;
+    }
+    [data-theme-version="dark"] .nck-quick-item:hover {
+        background: rgba(255, 106, 89, 0.05);
+    }
+    .nck-quick-item .qi-icon {
+        width: 32px; height: 32px;
+        border-radius: 6px;
+        background: var(--primary);
+        display: flex; align-items: center; justify-content: center;
+        color: #fff;
+        font-size: 13px;
+        flex-shrink: 0;
+    }
+    .nck-quick-item span.qi-label {
+        font-size: 13px;
+        font-weight: 600;
+    }
+    .nck-quick-item .qi-badge {
+        margin-left: auto;
+    }
+
+    /* ===== INFO STRIP (CLEAN FLAT PANEL) ===== */
+    .nck-info-strip {
+        background: #f8fafc;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        padding: 20px 22px;
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    [data-theme-version="dark"] .nck-info-strip {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    .nck-info-strip h6 {
+        color: #0f172a;
+        font-weight: 700;
+        margin-bottom: 4px;
+        font-size: 13.5px;
+    }
+    [data-theme-version="dark"] .nck-info-strip h6 {
+        color: #f1f5f9;
+    }
+    .nck-info-strip p {
+        color: #475569;
+        font-size: 12.5px;
+        margin: 0;
+        line-height: 1.6;
+    }
+    [data-theme-version="dark"] .nck-info-strip p {
+        color: #94a3b8;
+    }
+
+    /* ===== SECTION HEADER ===== */
+    .nck-section-hd {
+        font-size: 12px;
+        font-weight: 700;
+        color: #475569;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .nck-section-hd::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #e2e8f0;
+    }
+    [data-theme-version="dark"] .nck-section-hd {
+        color: #94a3b8;
+    }
+    [data-theme-version="dark"] .nck-section-hd::after {
+        background: #334155;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    .nck-prog-row { margin-bottom: 12px; }
+    .nck-prog-row .prog-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 4px;
+    }
+    [data-theme-version="dark"] .nck-prog-row .prog-label { color: #cbd5e1; }
+</style>
+{% endblock %}
+
+{% block message %}
+{% include 'getskills/elements/alert.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+
+    <!-- ===== WELCOME BANNER ===== -->
+    <div class="col-12 mb-4">
+        <div class="nck-welcome-card shadow-sm">
+            <div class="live-time" id="nck-live-time"></div>
+            <div class="badge-role">
+                {% if role == 'ADMIN' %}Administrator
+                {% elif role == 'TUTOR' %}Tutor
+                {% else %}Siswa
+                {% endif %}
+            </div>
+            <h3>Selamat Datang, {{ request.user.first_name|default:request.user.email }}</h3>
+            <p>
+                {% if role == 'ADMIN' %}
+                    Panel manajemen sistem pembelajaran <strong>Neper CodingKidz</strong>. Seluruh kendali administrasi, keuangan, dan data akademik berada dalam pantauan Anda.
+                {% elif role == 'TUTOR' %}
+                    Halaman pengajar program Neper CodingKidz. Evaluasi hasil proyek siswa, isi absensi kelas, dan kelola jadwal mengajar Anda di sini.
+                {% else %}
+                    Halaman belajar Anda. Kumpulkan proyek coding tepat waktu, periksa status penilaian tutor, dan pantau perkembangan belajar Anda.
+                {% endif %}
+            </p>
+            <div class="deco-code">&lt;/&gt;</div>
+        </div>
+    </div>
+
+    {% if role == 'ADMIN' %}
+    <!-- ===== ADMIN: STAT CARDS ROW 1 (ACADEMIC) ===== -->
+    <div class="col-xl-4 col-sm-6 mb-4">
+        <div class="card nck-stat shadow-sm">
+            <div class="nck-stat-header">
+                <span class="nck-stat-lbl">Total Siswa</span>
+                <div class="nck-stat-icon nck-icon-primary"><i class="bi bi-people-fill"></i></div>
+            </div>
+            <div class="nck-stat-val">{{ total_students }}</div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-sm-6 mb-4">
+        <div class="card nck-stat shadow-sm">
+            <div class="nck-stat-header">
+                <span class="nck-stat-lbl">Total Tutor</span>
+                <div class="nck-stat-icon nck-icon-dark"><i class="bi bi-briefcase-fill"></i></div>
+            </div>
+            <div class="nck-stat-val">{{ total_tutors }}</div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-sm-6 mb-4">
+        <div class="card nck-stat shadow-sm">
+            <div class="nck-stat-header">
+                <span class="nck-stat-lbl">Total Kelas</span>
+                <div class="nck-stat-icon nck-icon-info"><i class="bi bi-journal-text"></i></div>
+            </div>
+            <div class="nck-stat-val">{{ total_courses }}</div>
+        </div>
+    </div>
+
+    <!-- ===== ADMIN: STAT CARDS ROW 2 (FINANCE & PROJECTS) ===== -->
+    <div class="col-xl-4 col-sm-6 mb-4">
+        <div class="card nck-stat shadow-sm">
+            <div class="nck-stat-header">
+                <span class="nck-stat-lbl">Total Pendapatan</span>
+                <div class="nck-stat-icon nck-icon-secondary" style="background: rgba(34, 197, 94, 0.1); color: #22c55e;"><i class="bi bi-cash-stack"></i></div>
+            </div>
+            <div class="nck-stat-val">Rp {{ total_revenue|floatformat:0 }}</div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-sm-6 mb-4">
+        <div class="card nck-stat shadow-sm">
+            <div class="nck-stat-header">
+                <span class="nck-stat-lbl">Tagihan Belum Bayar</span>
+                <div class="nck-stat-icon nck-icon-warn"><i class="bi bi-file-earmark-text-fill"></i></div>
+            </div>
+            <div class="nck-stat-val">{{ unpaid_invoices }}</div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-sm-6 mb-4">
+        <div class="card nck-stat shadow-sm">
+            <div class="nck-stat-header">
+                <span class="nck-stat-lbl">Tugas Pending</span>
+                <div class="nck-stat-icon nck-icon-primary"><i class="bi bi-clock-fill"></i></div>
+            </div>
+            <div class="nck-stat-val">{{ pending_projects }}</div>
+        </div>
+    </div>
+
+    <!-- ADMIN: Quick Links + Info -->
+    <div class="col-xl-4 col-lg-5 mb-4">
+        <div class="card h-100">
+            <div class="card-header border-0 pb-0">
+                <div class="nck-section-hd">Aksi Cepat</div>
+            </div>
+            <div class="card-body pt-2">
+                <a href="{% url 'payments:admin_payment_verification' %}" class="nck-quick-item">
+                    <div class="qi-icon"><i class="fa fa-check-circle"></i></div>
+                    <span class="qi-label">Verifikasi Pembayaran</span>
+                    {% if unpaid_invoices > 0 %}<span class="badge badge-danger qi-badge">{{ unpaid_invoices }}</span>{% endif %}
+                </a>
+                <a href="{% url 'payments:admin_invoice_list' %}" class="nck-quick-item">
+                    <div class="qi-icon"><i class="fa fa-file-text"></i></div>
+                    <span class="qi-label">Manajemen Invoice</span>
+                </a>
+                <a href="{% url 'projects:submission_list' %}" class="nck-quick-item">
+                    <div class="qi-icon"><i class="fa fa-tasks"></i></div>
+                    <span class="qi-label">Review Tugas Siswa</span>
+                    {% if pending_projects > 0 %}<span class="badge badge-warning qi-badge">{{ pending_projects }}</span>{% endif %}
+                </a>
+                <a href="{% url 'students:student_list' %}" class="nck-quick-item">
+                    <div class="qi-icon"><i class="fa fa-users"></i></div>
+                    <span class="qi-label">Daftar Siswa</span>
+                </a>
+                <a href="{% url 'academics:class_list' %}" class="nck-quick-item">
+                    <div class="qi-icon"><i class="fa fa-book"></i></div>
+                    <span class="qi-label">Manajemen Kelas</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-8 col-lg-7 mb-4">
+        <div class="card h-100">
+            <div class="card-header border-0 pb-0">
+                <div class="nck-section-hd">Informasi Platform</div>
+            </div>
+            <div class="card-body pt-2">
+                <div class="nck-info-strip mb-3">
+                    <div>
+                        <h6>Administrasi Terpusat Neper CodingKidz</h6>
+                        <p>Kelola siswa, jadwal les, tagihan pembayaran invoice, dan review tugas siswa dari satu dashboard yang terintegrasi untuk mendukung proses belajar mengajar pemrograman anak yang efisien.</p>
+                    </div>
+                </div>
+                <div class="row g-2">
+                    <div class="col-4">
+                        <div class="text-center p-3 rounded" style="background: rgba(255, 106, 89, 0.06); border: 1px solid rgba(255, 106, 89, 0.15);">
+                            <i class="fa fa-code fa-lg text-primary"></i>
+                            <div style="font-size:11px;font-weight:700;color:var(--title);margin-top:6px;">Scratch & Python</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-center p-3 rounded" style="background: rgba(76, 188, 154, 0.06); border: 1px solid rgba(76, 188, 154, 0.15);">
+                            <i class="fa fa-gamepad fa-lg" style="color:var(--secondary);"></i>
+                            <div style="font-size:11px;font-weight:700;color:var(--title);margin-top:6px;">Game Dev</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-center p-3 rounded" style="background: rgba(91, 141, 238, 0.06); border: 1px solid rgba(91, 141, 238, 0.15);">
+                            <i class="fa fa-globe fa-lg" style="color:#5b8dee;"></i>
+                            <div style="font-size:11px;font-weight:700;color:var(--title);margin-top:6px;">Web Design</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TUTOR ===== -->
+    {% elif role == 'TUTOR' %}
+    <div class="col-xl-4 col-sm-6 mb-4">
+        <div class="card nck-stat shadow-sm">
+            <div class="nck-stat-header">
+                <span class="nck-stat-lbl">Total Siswa Saya</span>
+                <div class="nck-stat-icon nck-icon-primary"><i class="fa fa-users"></i></div>
+            </div>
+            <div class="nck-stat-val">{{ my_students_count }}</div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-sm-6 mb-4">
+        <div class="card nck-stat shadow-sm">
+            <div class="nck-stat-header">
+                <span class="nck-stat-lbl">Kelas yang Diajar</span>
+                <div class="nck-stat-icon nck-icon-secondary"><i class="fa fa-book"></i></div>
+            </div>
+            <div class="nck-stat-val">{{ my_classes_count }}</div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-sm-6 mb-4">
+        <div class="card nck-stat shadow-sm">
+            <div class="nck-stat-header">
+                <span class="nck-stat-lbl">Tugas Perlu Review</span>
+                <div class="nck-stat-icon nck-icon-warn"><i class="fa fa-clock-o"></i></div>
+            </div>
+            <div class="nck-stat-val">{{ pending_review_count }}</div>
+        </div>
+    </div>
+
+    <div class="col-xl-5 mb-4">
+        <div class="card h-100">
+            <div class="card-header border-0 pb-0">
+                <div class="nck-section-hd">Aksi Cepat</div>
+            </div>
+            <div class="card-body pt-2">
+                <a href="{% url 'projects:submission_list' %}" class="nck-quick-item">
+                    <div class="qi-icon"><i class="fa fa-tasks"></i></div>
+                    <span class="qi-label">Review Tugas Siswa</span>
+                    {% if pending_review_count > 0 %}<span class="badge badge-warning qi-badge">{{ pending_review_count }}</span>{% endif %}
+                </a>
+                <a href="{% url 'academics:session_list' %}" class="nck-quick-item">
+                    <div class="qi-icon"><i class="fa fa-calendar"></i></div>
+                    <span class="qi-label">Jadwal Sesi</span>
+                </a>
+                <a href="{% url 'attendance:attendance_list' %}" class="nck-quick-item">
+                    <div class="qi-icon"><i class="fa fa-check-square-o"></i></div>
+                    <span class="qi-label">Catat Kehadiran</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-7 mb-4">
+        <div class="card h-100">
+            <div class="card-header border-0 pb-0">
+                <div class="nck-section-hd">Catatan Mengajar</div>
+            </div>
+            <div class="card-body pt-2">
+                <div class="nck-info-strip w-100">
+                    <div>
+                        <h6>Evaluasi & Umpan Balik Siswa</h6>
+                        <p>Mohon periksa pengumpulan tugas siswa secara berkala dan berikan feedback yang konstruktif untuk mendukung proses belajar siswa. Pastikan presensi kelas dicatat setelah sesi kelas berakhir.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== STUDENT ===== -->
+    {% elif role == 'STUDENT' %}
+    <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card nck-stat shadow-sm">
+            <div class="nck-stat-header">
+                <span class="nck-stat-lbl">Kelas Aktif</span>
+                <div class="nck-stat-icon nck-icon-info"><i class="fa fa-book"></i></div>
+            </div>
+            <div class="nck-stat-val">{{ active_classes_count }}</div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card nck-stat shadow-sm">
+            <div class="nck-stat-header">
+                <span class="nck-stat-lbl">Tugas Aktif</span>
+                <div class="nck-stat-icon nck-icon-secondary"><i class="fa fa-code"></i></div>
+            </div>
+            <div class="nck-stat-val">{{ active_projects_count }}</div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card nck-stat shadow-sm">
+            <div class="nck-stat-header">
+                <span class="nck-stat-lbl">Tingkat Kehadiran</span>
+                <div class="nck-stat-icon nck-icon-green"><i class="fa fa-calendar-check-o"></i></div>
+            </div>
+            <div class="nck-stat-val">{{ attendance_rate }}%</div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card nck-stat shadow-sm">
+            <div class="nck-stat-header">
+                <span class="nck-stat-lbl">Tagihan Belum Bayar</span>
+                <div class="nck-stat-icon nck-icon-warn"><i class="fa fa-credit-card"></i></div>
+            </div>
+            <div class="nck-stat-val">{{ unpaid_invoices_count }}</div>
+        </div>
+    </div>
+
+    <div class="col-xl-5 mb-4">
+        <div class="card h-100">
+            <div class="card-header border-0 pb-0">
+                <div class="nck-section-hd">Aksi Cepat</div>
+            </div>
+            <div class="card-body pt-2">
+                <a href="{% url 'academics:class_list' %}" class="nck-quick-item">
+                    <div class="qi-icon"><i class="fa fa-book"></i></div>
+                    <span class="qi-label">Kelas Saya</span>
+                </a>
+                <a href="{% url 'projects:project_list' %}" class="nck-quick-item">
+                    <div class="qi-icon"><i class="fa fa-code"></i></div>
+                    <span class="qi-label">Tugas & Project</span>
+                    {% if active_projects_count > 0 %}<span class="badge badge-info qi-badge">{{ active_projects_count }}</span>{% endif %}
+                </a>
+                <a href="{% url 'payments:student_invoice_list' %}" class="nck-quick-item">
+                    <div class="qi-icon"><i class="fa fa-credit-card"></i></div>
+                    <span class="qi-label">Tagihan & Pembayaran</span>
+                    {% if unpaid_invoices_count > 0 %}<span class="badge badge-danger qi-badge">{{ unpaid_invoices_count }}</span>{% endif %}
+                </a>
+                <a href="{% url 'academics:session_list' %}" class="nck-quick-item">
+                    <div class="qi-icon"><i class="fa fa-calendar"></i></div>
+                    <span class="qi-label">Jadwal Les</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-7 mb-4">
+        <div class="card h-100">
+            <div class="card-header border-0 pb-0">
+                <div class="nck-section-hd">Progress Belajar</div>
+            </div>
+            <div class="card-body pt-2">
+                <div class="nck-info-strip mb-3">
+                    <div>
+                        <h6>Tingkatkan Skill Pemrograman Anda</h6>
+                        <p>Tulis kode secara konsisten di setiap pertemuan, selesaikan tugas proyek coding Anda tepat waktu, dan tanyakan pada tutor jika mengalami kendala.</p>
+                    </div>
+                </div>
+                <div class="nck-prog-row">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="prog-label">Tingkat Kehadiran</div>
+                        <span class="badge badge-success">{{ attendance_rate }}%</span>
+                    </div>
+                    <div class="progress mt-1" style="height:8px;border-radius:6px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width:{{ attendance_rate }}%;border-radius:6px;"></div>
+                    </div>
+                </div>
+                <div class="nck-prog-row">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="prog-label">Kelas Aktif</div>
+                        <span class="badge badge-primary">{{ active_classes_count }}</span>
+                    </div>
+                    <div class="progress mt-1" style="height:8px;border-radius:6px;">
+                        <div class="progress-bar" role="progressbar" style="width:{% if active_classes_count > 0 %}75{% else %}0{% endif %}%;border-radius:6px;background:var(--primary);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block additional_js %}
+<script>
+    function updateNCKTime() {
+        const now = new Date();
+        const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+        const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        const h = now.getHours();
+        const greet = h < 12 ? 'Selamat Pagi' : h < 15 ? 'Selamat Siang' : h < 18 ? 'Selamat Sore' : 'Selamat Malam';
+        const str = `${greet} &nbsp;·&nbsp; ${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} &nbsp;·&nbsp; ${String(h).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+        const el = document.getElementById('nck-live-time');
+        if (el) el.innerHTML = str;
+    }
+    updateNCKTime();
+    setInterval(updateNCKTime, 60000);
+</script>
+{% endblock %}

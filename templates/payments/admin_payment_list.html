@@ -1,0 +1,75 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        {% include 'getskills/elements/alert.html' %}
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title">Riwayat Pembayaran Siswa</h4>
+                <a href="{% url 'payments:admin_record_cash_payment' %}" class="btn btn-primary btn-sm shadow"><i class="fa fa-plus me-1"></i> Catat Pembayaran Cash</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-responsive-md">
+                        <thead>
+                            <tr>
+                                <th><strong>Siswa</strong></th>
+                                <th><strong>No. Invoice</strong></th>
+                                <th><strong>Jumlah Bayar</strong></th>
+                                <th><strong>Metode</strong></th>
+                                <th><strong>Referensi / Penerima</strong></th>
+                                <th><strong>Tanggal</strong></th>
+                                <th><strong>Status</strong></th>
+                                <th><strong>Kuitansi</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in payments %}
+                            <tr>
+                                <td>
+                                    <strong>{{ payment.student.user.first_name }} {{ payment.student.user.last_name }}</strong>
+                                    <br><small class="text-muted">{{ payment.student.student_code }}</small>
+                                </td>
+                                <td>{{ payment.invoice.invoice_number }}</td>
+                                <td><strong>Rp {{ payment.amount }}</strong></td>
+                                <td>
+                                    {% if payment.payment_method == 'CASH' %}
+                                        <span class="badge light badge-success">Cash / Tunai</span>
+                                    {% else %}
+                                        <span class="badge light badge-info">Transfer Bank</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ payment.payment_reference|default:"-" }}</td>
+                                <td>{{ payment.created_at|date:"d M Y H:i" }}</td>
+                                <td>
+                                    {% if payment.status == 'VERIFIED' %}
+                                        <span class="badge light badge-success">Verified</span>
+                                    {% elif payment.status == 'PENDING' %}
+                                        <span class="badge light badge-warning">Pending</span>
+                                    {% else %}
+                                        <span class="badge light badge-danger">{{ payment.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if payment.status == 'VERIFIED' %}
+                                        <a href="{% url 'payments:download_receipt_pdf' payment.id %}" class="btn btn-success btn-xxs shadow"><i class="fa fa-download me-1"></i> Unduh PDF</a>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center">Belum ada riwayat pembayaran yang tercatat.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

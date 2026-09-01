@@ -1,0 +1,183 @@
+{% load static %}
+
+<div class="dlabnav">
+    <div class="dlabnav-scroll">
+        <ul class="metismenu" id="menu">
+            
+            <!-- ==========================================
+                 1. ADMIN SIDEBAR
+                 ========================================== -->
+            {% if request.user.role == 'ADMIN' %}
+            <li>
+                <a href="{% url 'getskills:index' %}" aria-expanded="false">
+                    <i class="bi bi-grid"></i>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+            </li>
+            
+            <li>
+                <a class="has-arrow" href="javascript:void(0);" aria-expanded="false">
+                    <i class="bi bi-people"></i>
+                    <span class="nav-text">Pengguna</span>
+                </a>
+                <ul aria-expanded="false">
+                    <li><a href="{% url 'students:student_list' %}"><i class="bi bi-person-fill me-2"></i> Siswa</a></li>
+                    <li><a href="{% url 'tutors:teacher_list' %}?type=tutor"><i class="bi bi-person-badge-fill me-2"></i> Tutor</a></li>
+                    <li><a href="{% url 'getskills:users' %}"><i class="bi bi-person-check-fill me-2"></i> Admin</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a class="has-arrow" href="javascript:void(0);" aria-expanded="false">
+                    <i class="bi bi-journal-text"></i>
+                    <span class="nav-text">Akademik</span>
+                </a>
+                <ul aria-expanded="false">
+                    <li><a href="{% url 'academics:course_list' %}"><i class="bi bi-journal-bookmark-fill me-2"></i> Program Les</a></li>
+                    <li><a href="{% url 'academics:class_list' %}"><i class="bi bi-building me-2"></i> Kelas</a></li>
+                    <li><a href="{% url 'academics:session_list' %}"><i class="bi bi-calendar-event me-2"></i> Pertemuan (Sesi)</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a class="has-arrow" href="javascript:void(0);" aria-expanded="false">
+                    <i class="bi bi-pencil-square"></i>
+                    <span class="nav-text">Pembelajaran</span>
+                </a>
+                <ul aria-expanded="false">
+                    <li><a href="{% url 'attendance:attendance_list' %}"><i class="bi bi-calendar-check me-2"></i> Absensi</a></li>
+                    <li><a href="{% url 'projects:project_list' %}"><i class="bi bi-code-slash me-2"></i> Project</a></li>
+                    <li><a href="{% url 'projects:submission_list' %}"><i class="bi bi-cloud-arrow-up me-2"></i> Submission</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a class="has-arrow" href="javascript:void(0);" aria-expanded="false">
+                    <i class="bi bi-credit-card"></i>
+                    <span class="nav-text">Keuangan</span>
+                </a>
+                <ul aria-expanded="false">
+                    <li><a href="{% url 'payments:admin_payment_verification' %}"><i class="bi bi-check-circle me-2"></i> Verifikasi Pembayaran</a></li>
+                    <li><a href="{% url 'payments:admin_invoice_list' %}"><i class="bi bi-file-earmark-spreadsheet me-2"></i> Invoice</a></li>
+                    <li><a href="{% url 'payments:admin_payment_list' %}"><i class="bi bi-cash me-2"></i> Pembayaran Cash</a></li>
+                    <li><a href="{% url 'payments:admin_bank_account_list' %}"><i class="bi bi-credit-card me-2"></i> Rekening Bank</a></li>
+                    <li><a href="{% url 'payments:admin_qris_list' %}"><i class="bi bi-qr-code-scan me-2"></i> QRIS Pembayaran</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a class="has-arrow" href="javascript:void(0);" aria-expanded="false">
+                    <i class="bi bi-bar-chart-line"></i>
+                    <span class="nav-text">Laporan</span>
+                </a>
+                <ul aria-expanded="false">
+                    <li><a href="{% url 'reports:student_report' %}"><i class="bi bi-file-earmark-person me-2"></i> Laporan Siswa</a></li>
+                    <li><a href="{% url 'reports:attendance_report' %}"><i class="bi bi-file-earmark-check me-2"></i> Laporan Kehadiran</a></li>
+                    <li><a href="{% url 'reports:payment_report' %}"><i class="bi bi-file-earmark-minus me-2"></i> Laporan Pembayaran</a></li>
+                    <li><a href="{% url 'reports:project_report' %}"><i class="bi bi-file-earmark-code me-2"></i> Laporan Project</a></li>
+                    <li><a href="{% url 'reports:revenue_report' %}"><i class="bi bi-file-earmark-plus me-2"></i> Laporan Pendapatan</a></li>
+                </ul>
+            </li>
+
+
+            
+
+
+            <!-- ==========================================
+                 2. TUTOR SIDEBAR
+                 ========================================== -->
+            {% elif request.user.role == 'TUTOR' %}
+            <li>
+                <a href="{% url 'getskills:index' %}" aria-expanded="false">
+                    <i class="bi bi-grid"></i>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'academics:class_list' %}" aria-expanded="false">
+                    <i class="bi bi-book"></i>
+                    <span class="nav-text">Kelas Saya</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'academics:session_list' %}" aria-expanded="false">
+                    <i class="bi bi-calendar3"></i>
+                    <span class="nav-text">Jadwal Mengajar</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'attendance:attendance_list' %}" aria-expanded="false">
+                    <i class="bi bi-check2-square"></i>
+                    <span class="nav-text">Absensi</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'projects:project_list' %}" aria-expanded="false">
+                    <i class="bi bi-file-earmark-code"></i>
+                    <span class="nav-text">Project</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'projects:submission_list' %}" aria-expanded="false">
+                    <i class="bi bi-journal-arrow-up"></i>
+                    <span class="nav-text">Submission Siswa</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'getskills:user-details' id=request.user.id %}" aria-expanded="false">
+                    <i class="bi bi-person"></i>
+                    <span class="nav-text">Profil</span>
+                </a>
+            </li>
+
+            <!-- ==========================================
+                 3. STUDENT SIDEBAR
+                 ========================================== -->
+            {% elif request.user.role == 'STUDENT' %}
+            <li>
+                <a href="{% url 'getskills:index' %}" aria-expanded="false">
+                    <i class="bi bi-grid"></i>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'academics:class_list' %}" aria-expanded="false">
+                    <i class="bi bi-book"></i>
+                    <span class="nav-text">Kelas Saya</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'academics:session_list' %}" aria-expanded="false">
+                    <i class="bi bi-calendar3"></i>
+                    <span class="nav-text">Jadwal</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'payments:student_invoice_list' %}" aria-expanded="false">
+                    <i class="bi bi-cash-stack"></i>
+                    <span class="nav-text">Pembayaran</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'projects:project_list' %}" aria-expanded="false">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span class="nav-text">Project</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'attendance:attendance_list' %}" aria-expanded="false">
+                    <i class="bi bi-check-circle"></i>
+                    <span class="nav-text">Kehadiran</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'getskills:user-details' id=request.user.id %}" aria-expanded="false">
+                    <i class="bi bi-person"></i>
+                    <span class="nav-text">Profil</span>
+                </a>
+            </li>
+            {% endif %}
+
+        </ul>
+    </div>
+</div>

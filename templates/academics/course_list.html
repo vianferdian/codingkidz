@@ -1,0 +1,50 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static %}
+
+{% block message %}
+{% include 'getskills/elements/alert.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title">Program Les Yang Tersedia</h4>
+                {% if request.user.role == 'ADMIN' %}
+                <a href="{% url 'academics:add_course' %}" class="btn btn-primary btn-sm shadow"><i class="fa fa-plus me-1"></i> Tambah Program</a>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for course in courses %}
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card border">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary"><strong>{{ course.name }}</strong></h5>
+                                <p class="card-text text-muted">{{ course.description|default:"Tidak ada deskripsi." }}</p>
+                                <hr>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Sesi: <strong>{{ course.total_sessions }} Pertemuan</strong></span>
+                                    <span class="text-danger font-w600">Rp {{ course.price }}</span>
+                                </div>
+                                {% if request.user.role == 'ADMIN' %}
+                                <div class="d-flex justify-content-end gap-2 mt-3">
+                                    <a href="{% url 'academics:edit_course' course.id %}" class="btn btn-warning btn-xxs shadow"><i class="fa fa-edit"></i> Edit</a>
+                                    <a href="{% url 'academics:delete_course' course.id %}" class="btn btn-danger btn-xxs shadow" onclick="return handleDelete(this.href, 'Apakah Anda yakin ingin menghapus program les ini?');"><i class="fa fa-trash"></i> Hapus</a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-center p-5">
+                        <p class="text-muted">Belum ada program les yang terdaftar.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

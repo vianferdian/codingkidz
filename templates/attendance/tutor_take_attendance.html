@@ -1,0 +1,189 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static custom_tags %}
+
+{% block content %}
+<div class="row">
+    <!-- Info Sesi -->
+    <div class="col-12 mb-4">
+        <div class="card border">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div>
+                        <span class="text-primary font-w600">Presensi Kehadiran</span>
+                        <h3 class="text-black font-w700 mt-1">{{ course_session.course.name }}</h3>
+                        <p class="text-muted mb-0">Sesi #{{ course_session.session_number }} - {{ course_session.title|default:"Materi Belum Ditentukan" }}</p>
+                    </div>
+                    <div class="text-end mt-2 mt-sm-0">
+                        <span class="badge light badge-dark fs-14"><i class="fa fa-calendar me-1"></i> {{ course_session.session_date }}</span>
+                        <span class="badge light badge-dark fs-14 ms-1"><i class="fa fa-clock-o me-1"></i> {{ course_session.start_time }} - {{ course_session.end_time }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabel Siswa -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title">Daftar Siswa Kelas</h4>
+                <a href="{% url 'attendance:attendance_list' %}" class="btn btn-secondary btn-sm shadow"><i class="fa fa-arrow-left me-1"></i> Kembali</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-responsive-md">
+                        <thead>
+                            <tr>
+                                <th><strong>Siswa</strong></th>
+                                <th><strong>Kode Siswa</strong></th>
+                                <th class="text-center"><strong>Opsi Kehadiran (Klik untuk Simpan)</strong></th>
+                                <th class="text-center"><strong>Status Saat Ini</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="{{ student.user.avatar.url }}" class="rounded-lg me-2" width="30" alt="" />
+                                        <span class="font-w600 text-black">{{ student.user.first_name }} {{ student.user.last_name }}</span>
+                                    </div>
+                                </td>
+                                <td><strong>{{ student.student_code }}</strong></td>
+                                <td class="text-center">
+                                    <!-- Button Group untuk presensi instan -->
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button" 
+                                                class="btn btn-outline-success btn-attendance-opt {% if attendance_dict|get_item:student.id == 'HADIR' %}active{% endif %}"
+                                                onclick="submitAttendance('{{ student.id }}', 'HADIR', this)">
+                                            Hadir
+                                        </button>
+                                        <button type="button" 
+                                                class="btn btn-outline-danger btn-attendance-opt {% if attendance_dict|get_item:student.id == 'ALPA' %}active{% endif %}"
+                                                onclick="submitAttendance('{{ student.id }}', 'ALPA', this)">
+                                            Tidak Hadir
+                                        </button>
+                                        <button type="button" 
+                                                class="btn btn-outline-warning btn-attendance-opt {% if attendance_dict|get_item:student.id == 'IZIN' %}active{% endif %}"
+                                                onclick="submitAttendance('{{ student.id }}', 'IZIN', this)">
+                                            Izin
+                                        </button>
+                                        <button type="button" 
+                                                class="btn btn-outline-info btn-attendance-opt {% if attendance_dict|get_item:student.id == 'SAKIT' %}active{% endif %}"
+                                                onclick="submitAttendance('{{ student.id }}', 'SAKIT', this)">
+                                            Sakit
+                                        </button>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <span id="status-badge-{{ student.id }}" class="badge badge-sm badge-status-display">
+                                        {% if attendance_dict|get_item:student.id == 'HADIR' %}
+                                            <span class="text-success font-w600">Hadir</span>
+                                        {% elif attendance_dict|get_item:student.id == 'ALPA' %}
+                                            <span class="text-danger font-w600">Tidak Hadir</span>
+                                        {% elif attendance_dict|get_item:student.id == 'IZIN' %}
+                                            <span class="text-warning font-w600">Izin</span>
+                                        {% elif attendance_dict|get_item:student.id == 'SAKIT' %}
+                                            <span class="text-info font-w600">Sakit</span>
+                                        {% else %}
+                                            <span class="text-muted">Belum Diabsen</span>
+                                        {% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">Belum ada siswa aktif yang terdaftar di program les ini.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Form tersembunyi untuk CSRF token -->
+<form id="csrf-form">
+    {% csrf_token %}
+</form>
+
+<!-- Notifikasi Toast Halus -->
+<div id="toast-notif" style="display:none; position: fixed; bottom: 20px; right: 20px; z-index: 9999; background: #0f172a; color: #fff; padding: 12px 24px; border-radius: 8px; border-left: 4px solid #e11d48; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+    Presensi berhasil disimpan!
+</div>
+{% endblock %}
+
+{% block additional_js %}
+<script>
+    function submitAttendance(studentId, status, buttonElement) {
+        const csrfToken = document.querySelector('#csrf-form [name=csrfmiddlewaretoken]').value;
+        const sessionId = '{{ course_session.id }}';
+
+        // Set visual loading state
+        const originalText = buttonElement.innerHTML;
+        buttonElement.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+        buttonElement.disabled = true;
+
+        const formData = new FormData();
+        formData.append('session_id', sessionId);
+        formData.append('student_id', studentId);
+        formData.append('status', status);
+        formData.append('csrfmiddlewaretoken', csrfToken);
+
+        fetch("{% url 'attendance:tutor_submit_attendance_ajax' %}", {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            buttonElement.innerHTML = originalText;
+            buttonElement.disabled = false;
+
+            if (data.status === 'success') {
+                // Update class active button
+                const row = buttonElement.closest('tr');
+                const buttons = row.querySelectorAll('.btn-attendance-opt');
+                buttons.forEach(btn => btn.classList.remove('active'));
+                buttonElement.classList.add('active');
+
+                // Update status badge
+                const statusBadge = document.getElementById(`status-badge-${studentId}`);
+                if (status === 'HADIR') {
+                    statusBadge.innerHTML = '<span class="text-success font-w600">Hadir</span>';
+                } else if (status === 'ALPA') {
+                    statusBadge.innerHTML = '<span class="text-danger font-w600">Tidak Hadir</span>';
+                } else if (status === 'IZIN') {
+                    statusBadge.innerHTML = '<span class="text-warning font-w600">Izin</span>';
+                } else if (status === 'SAKIT') {
+                    statusBadge.innerHTML = '<span class="text-info font-w600">Sakit</span>';
+                }
+
+                // Show toast notification
+                showToast(data.message);
+            } else {
+                alert("Gagal menyimpan presensi: " + data.message);
+            }
+        })
+        .catch(error => {
+            buttonElement.innerHTML = originalText;
+            buttonElement.disabled = false;
+            console.error('Error:', error);
+            alert("Terjadi kesalahan jaringan.");
+        });
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast-notif');
+        toast.innerText = message;
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3000);
+    }
+</script>
+{% endblock %}

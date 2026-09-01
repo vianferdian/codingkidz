@@ -1,0 +1,24 @@
+{% load static %}
+<div class="chatbox">
+    <div class="chatbox-close"></div>
+    <div class="card mb-sm-3 mb-md-0 contacts_card" style="height: 100vh; border: none;">
+        <div class="card-header chat-list-header text-center d-flex justify-content-between align-items-center bg-white border-bottom">
+            <h5 class="mb-0 text-black font-w800"><i class="fa fa-bell text-primary me-2"></i>Notifikasi</h5>
+            {% if unread_notifications_count > 0 %}
+                <a href="{% url 'notifications:mark_all_read' %}" class="btn btn-primary btn-xxs shadow">Baca Semua</a>
+            {% endif %}
+        </div>
+        <div class="card-body contacts_body p-0 dlab-scroll" id="DLAB_W_Contacts_Body" style="overflow-y: auto;">
+            <ul class="contacts mb-0" id="notification-list-container" style="list-style: none; padding-left: 0;">
+                {% include 'notifications/partial_list.html' %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-light-primary {
+    background-color: rgba(55, 69, 87, 0.05) !important;
+    border-left: 3px solid var(--primary);
+}
+</style>

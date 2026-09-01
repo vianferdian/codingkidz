@@ -1,0 +1,87 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        {% include 'getskills/elements/alert.html' %}
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title">Verifikasi Bukti Transfer Pembayaran</h4>
+                <form method="POST" action="{% url 'payments:admin_trigger_billing' %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-sm shadow" onclick="return confirm('Apakah Anda yakin ingin mencetak tagihan bulanan untuk semua siswa aktif sekarang?');"><i class="fa fa-refresh me-1"></i> Cetak Tagihan Bulanan (Otomatis)</button>
+                </form>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-responsive-md">
+                        <thead>
+                            <tr>
+                                <th><strong>Siswa</strong></th>
+                                <th><strong>No. Invoice</strong></th>
+                                <th><strong>Metode</strong></th>
+                                <th><strong>Jumlah Tagihan</strong></th>
+                                <th><strong>Jumlah Ditransfer</strong></th>
+                                <th><strong>Referensi Pengirim</strong></th>
+                                <th><strong>Bukti Transfer</strong></th>
+                                <th><strong>Tanggal Kirim</strong></th>
+                                <th><strong>Aksi</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in pending_payments %}
+                            <tr>
+                                <td>
+                                    <strong>{{ payment.student.user.first_name }} {{ payment.student.user.last_name }}</strong>
+                                    <br><small class="text-muted">{{ payment.student.student_code }}</small>
+                                </td>
+                                <td>{{ payment.invoice.invoice_number }}</td>
+                                <td>
+                                    {% if payment.payment_method == 'QRIS' %}
+                                        <span class="badge light badge-info"><i class="fa fa-qrcode me-1"></i> QRIS</span>
+                                    {% elif payment.payment_method == 'CASH' %}
+                                        <span class="badge light badge-dark">Cash</span>
+                                    {% else %}
+                                        <span class="badge light badge-primary"><i class="fa fa-university me-1"></i> Bank</span>
+                                    {% endif %}
+                                </td>
+                                <td>Rp {{ payment.invoice.amount }}</td>
+                                <td><strong class="text-primary">Rp {{ payment.amount }}</strong></td>
+                                <td>{{ payment.payment_reference }}</td>
+                                <td>
+                                    {% if payment.proof %}
+                                        <a href="{{ payment.proof.url }}" target="_blank" class="btn btn-info btn-xxs">Lihat Bukti</a>
+                                    {% else %}
+                                        <span class="text-danger">Tidak ada berkas</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ payment.created_at|date:"d M Y H:i" }}</td>
+                                <td>
+                                    <div class="d-flex">
+                                        <form method="POST" action="{% url 'payments:admin_verify_payment' payment.id %}" class="me-2">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="approve">
+                                            <button type="submit" class="btn btn-success btn-xxs shadow">Setujui</button>
+                                        </form>
+                                        <form method="POST" action="{% url 'payments:admin_verify_payment' payment.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="reject">
+                                            <button type="submit" class="btn btn-danger btn-xxs shadow">Tolak</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center">Tidak ada pembayaran yang butuh verifikasi saat ini.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

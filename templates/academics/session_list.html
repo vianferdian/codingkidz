@@ -1,0 +1,76 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static %}
+
+{% block message %}
+{% include 'getskills/elements/alert.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title">Jadwal Sesi Pertemuan Kelas</h4>
+                {% if request.user.role == 'ADMIN' %}
+                <a href="{% url 'academics:add_session' %}" class="btn btn-primary btn-sm shadow"><i class="fa fa-plus me-1"></i> Tambah Jadwal Pertemuan</a>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-responsive-md">
+                        <thead>
+                            <tr>
+                                <th><strong>Sesi #</strong></th>
+                                <th><strong>Program / Kelas</strong></th>
+                                <th><strong>Judul Materi</strong></th>
+                                <th><strong>Tanggal Pertemuan</strong></th>
+                                <th><strong>Waktu</strong></th>
+                                <th><strong>Tutor Pengajar</strong></th>
+                                <th><strong>Ruang</strong></th>
+                                <th><strong>Status</strong></th>
+                                {% if request.user.role == 'ADMIN' %}
+                                <th><strong>Aksi</strong></th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for session in sessions %}
+                            <tr>
+                                <td><strong>#{{ session.session_number }}</strong></td>
+                                <td>{{ session.course.name }}</td>
+                                <td>{{ session.title|default:"Materi Belum Ditentukan" }}</td>
+                                <td>{{ session.session_date }}</td>
+                                <td>{{ session.start_time }} - {{ session.end_time }}</td>
+                                <td>{{ session.teacher.user.first_name }} {{ session.teacher.user.last_name }}</td>
+                                <td>{{ session.room|default:"-" }}</td>
+                                <td>
+                                    {% if session.status == 'SCHEDULED' %}
+                                        <span class="badge light badge-info">Terjadwal</span>
+                                    {% elif session.status == 'COMPLETED' %}
+                                        <span class="badge light badge-success">Selesai</span>
+                                    {% else %}
+                                        <span class="badge light badge-danger">{{ session.status }}</span>
+                                    {% endif %}
+                                </td>
+                                {% if request.user.role == 'ADMIN' %}
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <a href="{% url 'academics:edit_session' session.id %}" class="btn btn-warning btn-xxs shadow"><i class="fa fa-edit"></i> Edit</a>
+                                        <a href="{% url 'academics:delete_session' session.id %}" class="btn btn-danger btn-xxs shadow" onclick="return confirmDelete(event, 'Apakah Anda yakin ingin menghapus sesi pertemuan ini?');"><i class="fa fa-trash"></i> Hapus</a>
+                                    </div>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="9" class="text-center">Belum ada sesi pertemuan kelas yang dibuat.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

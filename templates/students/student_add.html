@@ -1,0 +1,165 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static widget_tweaks %}
+
+{% block content %}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-xl-12 col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Form Tambah Siswa Baru</h4>
+            </div>
+            <div class="card-body">
+                <div class="basic-form">
+                    <form method="post" enctype="multipart/form-data" novalidate autocomplete="off">
+                        {% csrf_token %}
+                        {% include 'getskills/elements/alert.html' %}
+                        
+                        <div class="row">
+                            <!-- Avatar Upload -->
+                            <div class="mb-3 col-md-6">
+                                <div class="avatar-upload">
+                                    <div class="avatar-edit">
+                                        {{ form.avatar|attr:"type:file" }}
+                                        <label for="id_avatar"><i class="fas fa-pencil-alt"></i></label>
+                                    </div>
+                                    <div class="avatar-preview">
+                                        <div id="imagePreview" style="background-image: url('{% static 'getskills/images/avatar/1.jpg' %}');"></div>
+                                    </div>
+                                </div>
+                                <div class="text-danger w-100 d-block mt-1">
+                                    {{ form.avatar.errors }}     
+                                </div>
+                            </div>
+
+                            <!-- User Info -->
+                            <div class="row col-md-6">
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label">Nama Depan <span class="text-danger">*</span></label>
+                                    {{ form.first_name|attr:"type:text"|attr:"class:form-control"|attr:"placeholder:Nama Depan" }}
+                                    <div class="text-danger w-100 d-block mt-1">
+                                        {{ form.first_name.errors }}
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label">Nama Belakang <span class="text-danger">*</span></label>
+                                    {{ form.last_name|attr:"type:text"|attr:"class:form-control"|attr:"placeholder:Nama Belakang" }}
+                                    <div class="text-danger w-100 d-block mt-1">
+                                        {{ form.last_name.errors }}
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-12">
+                                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    {{ form.email|attr:"type:email"|attr:"class:form-control"|attr:"placeholder:Email" }}
+                                    <div class="text-danger w-100 d-block mt-1">
+                                        {{ form.email.errors }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Kode Siswa <span class="text-danger">*</span></label>
+                                {{ form.student_code|attr:"type:text"|attr:"class:form-control"|attr:"placeholder:Kode Siswa (contoh: SN2026001)" }}
+                                <div class="text-danger w-100 d-block mt-1">
+                                    {{ form.student_code.errors }}
+                                </div>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Password <span class="text-danger">*</span></label>
+                                {{ form.password|attr:"type:password"|attr:"class:form-control"|attr:"placeholder:Password" }}
+                                <div class="text-danger w-100 d-block mt-1">
+                                    {{ form.password.errors }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Nama Sekolah</label>
+                                {{ form.school_name|attr:"type:text"|attr:"class:form-control"|attr:"placeholder:Nama Sekolah" }}
+                                <div class="text-danger w-100 d-block mt-1">
+                                    {{ form.school_name.errors }}
+                                </div>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
+                                {{ form.gender|attr:"class:form-control default-select wide" }}
+                                <div class="text-danger w-100 d-block mt-1">
+                                    {{ form.gender.errors }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Nama Orang Tua</label>
+                                {{ form.parent_name|attr:"type:text"|attr:"class:form-control"|attr:"placeholder:Nama Orang Tua" }}
+                                <div class="text-danger w-100 d-block mt-1">
+                                    {{ form.parent_name.errors }}
+                                </div>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">No. Telp Orang Tua</label>
+                                {{ form.parent_phone|attr:"type:text"|attr:"class:form-control"|attr:"placeholder:No. Telp Orang Tua" }}
+                                <div class="text-danger w-100 d-block mt-1">
+                                    {{ form.parent_phone.errors }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Tanggal Lahir</label>
+                                {{ form.birth_date }}
+                                <div class="text-danger w-100 d-block mt-1">
+                                    {{ form.birth_date.errors }}
+                                </div>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Status <span class="text-danger">*</span></label>
+                                {{ form.status|attr:"class:form-control default-select wide" }}
+                                <div class="text-danger w-100 d-block mt-1">
+                                    {{ form.status.errors }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-md-12">
+                                <label class="form-label">Alamat</label>
+                                {{ form.address|attr:"class:form-control" }}
+                                <div class="text-danger w-100 d-block mt-1">
+                                    {{ form.address.errors }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-secondary mt-4 mb-5">Simpan</button>
+                        <a href="{% url 'students:student_list' %}" class="btn btn-primary mt-4 mb-5">Batal</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_js %}
+<script>
+   function readURL(input) {
+      if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+               $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+               $('#imagePreview').hide();
+               $('#imagePreview').fadeIn(650);
+            }
+            reader.readAsDataURL(input.files[0]);
+      }
+   }
+   $("#id_avatar").change(function() {
+      readURL(this);
+   });
+</script> 
+{% endblock %}

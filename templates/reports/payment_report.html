@@ -1,0 +1,74 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title">Laporan Pembayaran Siswa</h4>
+                <a href="{% url 'reports:payment_report_pdf' %}" target="_blank" class="btn btn-danger btn-sm shadow"><i class="fa fa-file-pdf me-1"></i> Cetak PDF</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-responsive-md">
+                        <thead>
+                            <tr>
+                                <th><strong>ID Tagihan</strong></th>
+                                <th><strong>Siswa</strong></th>
+                                <th><strong>Jumlah Bayar</strong></th>
+                                <th><strong>Metode</strong></th>
+                                <th><strong>Tanggal Transfer</strong></th>
+                                <th><strong>Status Verifikasi</strong></th>
+                                <th><strong>Bukti Transfer</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in payments %}
+                            <tr>
+                                <td><strong>#{{ payment.invoice.id }}</strong></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="{{ payment.invoice.student.user.avatar.url }}" class="rounded-lg me-2" width="24" alt="" />
+                                        <span class="w-space-no">{{ payment.invoice.student.user.first_name }} {{ payment.invoice.student.user.last_name }}</span>
+                                    </div>
+                                </td>
+                                <td>Rp {{ payment.amount|floatformat:0 }}</td>
+                                <td>
+                                    {% if payment.payment_method == 'CASH' %}
+                                        <span class="badge light badge-dark">Cash</span>
+                                    {% else %}
+                                        <span class="badge light badge-info">Transfer Bank</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ payment.paid_at|date:"d-m-Y H:i" }}</td>
+                                <td>
+                                    {% if payment.status == 'VERIFIED' %}
+                                        <span class="badge light badge-success">Terverifikasi</span>
+                                    {% elif payment.status == 'PENDING' %}
+                                        <span class="badge light badge-warning">Menunggu</span>
+                                    {% else %}
+                                        <span class="badge light badge-danger">{{ payment.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if payment.proof %}
+                                        <a href="{{ payment.proof.url }}" target="_blank" class="btn btn-xxs btn-primary"><i class="fa fa-image me-1"></i> Lihat Bukti</a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">Belum ada riwayat pembayaran.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

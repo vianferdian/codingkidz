@@ -1,0 +1,71 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <!-- Rekap Pendapatan Card -->
+    <div class="col-xl-4 col-sm-6 mb-4">
+        <div class="card shadow-sm" style="border: 1px solid #e2e8f0; border-radius: 12px;">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted fs-12 font-w600 uppercase">Total Pendapatan Terverifikasi</span>
+                        <h3 class="text-black font-w700 mt-2">Rp {{ total_revenue|floatformat:0 }}</h3>
+                    </div>
+                    <div class="p-3 rounded bg-success-light text-success">
+                        <i class="fa fa-money fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title">Daftar Transaksi Lunas</h4>
+                <a href="{% url 'reports:revenue_report_pdf' %}" target="_blank" class="btn btn-danger btn-sm shadow"><i class="fa fa-file-pdf me-1"></i> Cetak PDF</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-responsive-md">
+                        <thead>
+                            <tr>
+                                <th><strong>No. Invoice</strong></th>
+                                <th><strong>Siswa</strong></th>
+                                <th><strong>Jumlah Tagihan</strong></th>
+                                <th><strong>Deskripsi</strong></th>
+                                <th><strong>Tanggal Jatuh Tempo</strong></th>
+                                <th><strong>Status</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for inv in paid_invoices %}
+                            <tr>
+                                <td><strong>#{{ inv.id }}</strong></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="{{ inv.student.user.avatar.url }}" class="rounded-lg me-2" width="24" alt="" />
+                                        <span class="w-space-no">{{ inv.student.user.first_name }} {{ inv.student.user.last_name }}</span>
+                                    </div>
+                                </td>
+                                <td>Rp {{ inv.amount|floatformat:0 }}</td>
+                                <td>{{ inv.course.name|default:"Tagihan Les" }}</td>
+                                <td>{{ inv.due_date|date:"d-m-Y" }}</td>
+                                <td>
+                                    <span class="badge light badge-success">Lunas / Paid</span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">Belum ada invoice dengan status lunas.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

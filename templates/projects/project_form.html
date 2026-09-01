@@ -1,0 +1,79 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static widget_tweaks %}
+
+{% block content %}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-xl-12 col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">{{ page_title }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="basic-form">
+                    <form method="post" enctype="multipart/form-data" novalidate autocomplete="off">
+                        {% csrf_token %}
+                        {% include 'getskills/elements/alert.html' %}
+                        
+                        {% if submission %}
+                        <div class="card bg-light mb-4">
+                            <div class="card-header bg-secondary text-white">
+                                <h5 class="mb-0 text-white"><i class="fa fa-info-circle me-2"></i> Rincian Tugas yang Dikumpulkan</h5>
+                            </div>
+                            <div class="card-body bg-white border border-top-0 rounded-bottom">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <h6 class="font-w600 text-black">Siswa</h6>
+                                        <p class="text-muted mb-0">{{ submission.student.user.first_name }} {{ submission.student.user.last_name }} ({{ submission.student.student_code }})</p>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <h6 class="font-w600 text-black">Project / Tugas</h6>
+                                        <p class="text-muted mb-0"><strong>{{ submission.project.title }}</strong><br/><small>Kelas: {{ submission.project.course.name }}</small></p>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <h6 class="font-w600 text-black">Tanggal Kirim</h6>
+                                        <p class="text-muted mb-0">{{ submission.submitted_at|date:"d M Y H:i" }}</p>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <h6 class="font-w600 text-black">Berkas / Link Lampiran</h6>
+                                        <p class="mb-0">
+                                            {% if submission.file %}
+                                                <a href="{{ submission.file.url }}" target="_blank" class="btn btn-outline-primary btn-xxs"><i class="fa fa-download me-1"></i> Unduh File Tugas</a>
+                                            {% endif %}
+                                            {% if submission.link %}
+                                                <a href="{{ submission.link }}" target="_blank" class="btn btn-outline-info btn-xxs ms-1"><i class="fa fa-external-link me-1"></i> Buka Link Tugas</a>
+                                            {% endif %}
+                                            {% if not submission.file and not submission.link %}
+                                                <span class="text-muted">Tidak ada berkas/link terlampir</span>
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <h6 class="font-w600 text-black">Deskripsi / Catatan Siswa</h6>
+                                        <div class="text-dark p-3 border rounded" style="background-color: #f8fafc; font-size: 0.95rem;">{{ submission.description|default:"Tidak ada deskripsi dari siswa."|linebreaksbr }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="row">
+                            {% for field in form %}
+                            <div class="mb-3 {% if field.name == 'description' or field.name == 'instructions' or field.name == 'feedback' or field.name == 'address' %}col-md-12{% else %}col-md-6{% endif %}">
+                                <label class="form-label">{{ field.label }} {% if field.field.required %}<span class="text-danger">*</span>{% endif %}</label>
+                                {{ field }}
+                                <div class="text-danger w-100 d-block mt-1">
+                                    {{ field.errors }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <button type="submit" class="btn btn-secondary mt-4 mb-5">Simpan</button>
+                        <a href="{{ cancel_url }}" class="btn btn-primary mt-4 mb-5">Batal</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

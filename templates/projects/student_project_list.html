@@ -1,0 +1,45 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Tugas & Project Aktif Saya</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for project in projects %}
+                    <div class="col-xl-6 col-xxl-12">
+                        <div class="card border">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="badge light badge-primary">{{ project.course.name }}</span>
+                                    <span class="text-danger"><i class="fa fa-clock me-1"></i> {{ project.deadline|date:"d M Y H:i" }}</span>
+                                </div>
+                                <h4 class="card-title text-dark"><strong>{{ project.title }}</strong></h4>
+                                <p class="card-text">{{ project.description }}</p>
+                                <div class="alert alert-secondary mt-3">
+                                    <strong>Instruksi Pengerjaan:</strong><br>
+                                    {{ project.instructions }}
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Nilai Maks: <strong>{{ project.max_score }} Poin</strong></span>
+                                    <a href="{% url 'projects:submit_project' project.id %}" class="btn btn-primary btn-sm shadow">Kumpulkan Tugas</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-center p-5">
+                        <p class="text-muted">Tidak ada project aktif yang ditugaskan kepada Anda saat ini.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

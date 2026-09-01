@@ -1,0 +1,83 @@
+{% extends 'getskills/elements/layouts/admin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Riwayat Pengumpulan Tugas Saya</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-responsive-md">
+                        <thead>
+                            <tr>
+                                <th><strong>Judul Project</strong></th>
+                                <th><strong>Tanggal Kirim</strong></th>
+                                <th><strong>Tipe</strong></th>
+                                <th><strong>Berkas/Link</strong></th>
+                                <th><strong>Status</strong></th>
+                                <th><strong>Nilai Anda</strong></th>
+                                <th><strong>Review / Feedback</strong></th>
+                                <th><strong>Aksi</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for submission in submissions %}
+                            <tr>
+                                <td><strong>{{ submission.project.title }}</strong></td>
+                                <td>{{ submission.submitted_at|date:"d M Y H:i" }}</td>
+                                <td>{{ submission.get_submission_type_display }}</td>
+                                <td>
+                                    {% if submission.file %}
+                                        <a href="{{ submission.file.url }}" target="_blank" class="btn btn-outline-info btn-xxs">Buka File</a>
+                                    {% endif %}
+                                    {% if submission.link %}
+                                        <a href="{{ submission.link }}" target="_blank" class="btn btn-outline-warning btn-xxs">Buka Link</a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if submission.status == 'COMPLETED' %}
+                                        <span class="badge light badge-success">Approved / Selesai</span>
+                                    {% elif submission.status == 'SUBMITTED' %}
+                                        <span class="badge light badge-warning">Menunggu Review</span>
+                                    {% elif submission.status == 'REVIEWED' %}
+                                        <span class="badge light badge-info">Sudah Dinilai</span>
+                                    {% elif submission.status == 'REVISION_REQUIRED' %}
+                                        <span class="badge light badge-danger">Perlu Revisi</span>
+                                    {% elif submission.status == 'LATE' %}
+                                        <span class="badge light badge-danger">Terlambat</span>
+                                    {% else %}
+                                        <span class="badge light badge-dark">{{ submission.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if submission.score %}
+                                        <strong class="text-success fs-16">{{ submission.score }}</strong> / {{ submission.project.max_score }}
+                                    {% else %}
+                                        <span class="text-muted">Belum Dinilai</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ submission.feedback|default:"Belum ada feedback." }}</td>
+                                <td>
+                                    {% if submission.status == 'REVISION_REQUIRED' %}
+                                        <a href="{% url 'projects:submit_project' submission.project.id %}" class="btn btn-warning btn-xxs shadow"><i class="fa fa-edit me-1"></i> Perbaiki Tugas</a>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">Anda belum pernah mengumpulkan tugas apapun.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% load static %}
+<style>
+    .brand-title-text {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.25rem !important;
+        font-weight: 800;
+        white-space: nowrap;
+        margin-left: 8px;
+        line-height: 1;
+        display: inline-block;
+    }
+    .brand-title-text .part-1 {
+        color: var(--primary);
+    }
+    .brand-title-text .part-2 {
+        color: #374557;
+    }
+    [data-theme-version="dark"] .brand-title-text .part-2 {
+        color: #fff;
+    }
+    [data-nav-headerbg="color_2"] .brand-title-text .part-2,
+    [data-nav-headerbg="color_3"] .brand-title-text .part-2,
+    [data-nav-headerbg="color_4"] .brand-title-text .part-2,
+    [data-nav-headerbg="color_5"] .brand-title-text .part-2,
+    [data-nav-headerbg="color_6"] .brand-title-text .part-2,
+    [data-nav-headerbg="color_7"] .brand-title-text .part-2,
+    [data-nav-headerbg="color_8"] .brand-title-text .part-2,
+    [data-nav-headerbg="color_9"] .brand-title-text .part-2,
+    [data-nav-headerbg="color_10"] .brand-title-text .part-2 {
+        color: #fff;
+    }
+</style>
+<div class="nav-header">
+    <a href="{% url 'getskills:index' %}" class="brand-logo">
+        <img src="{% static 'getskills/images/gamepad.png' %}" style="height: 32px; width: auto; max-width: 60px; object-fit: contain;" alt="Logo">
+        <span class="brand-title brand-title-text">
+            <span class="part-1">Neper</span><span class="part-2">CodingKidz</span>
+        </span>
+    </a>
+    <div class="nav-control">
+        <div class="hamburger">
+            <span class="line"></span><span class="line"></span><span class="line"></span>
+        </div>
+    </div>
+</div>

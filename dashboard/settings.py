@@ -40,6 +40,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://codingkidz.smkn1-cirebon.sch.id',
+    'http://codingkidz.smkn1-cirebon.sch.id',
+    'https://*.smkn1-cirebon.sch.id',
+]
+
 
 # Application definition
 

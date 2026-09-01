@@ -12,10 +12,14 @@ env.bak/
 venv.bak/
 
 # Django local settings / db
+.env
 db.sqlite3
 db.sqlite3-journal
 local_settings.py
 *.log
+
+# Media / Uploads
+media/
 
 # IDE / OS
 .vscode/

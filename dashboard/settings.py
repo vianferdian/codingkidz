@@ -208,4 +208,9 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'pplg.smkn1crbn@gmail.com')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'njqybrkhhvpihpas')
 DEFAULT_FROM_EMAIL = f'Neper CodingKidz <{EMAIL_HOST_USER}>'
 
+# Session Auto-Logout (30 Menit Idle Expiration)
+SESSION_COOKIE_AGE = 1800  # 30 menit (dalam detik)
+SESSION_SAVE_EVERY_REQUEST = True  # Reset timer 30 menit setiap kali user aktif berinteraksi
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 

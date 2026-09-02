@@ -37,7 +37,7 @@ def submission_list(request):
 
 
 @login_required(login_url='getskills:login')
-@role_required(['ADMIN', 'GURU'])
+@role_required(['ADMIN', 'GURU', 'TUTOR'])
 def add_project(request):
     if request.method == 'POST':
         form = ProjectForm(request.POST)
@@ -70,7 +70,7 @@ def add_project(request):
 
 
 @login_required(login_url='getskills:login')
-@role_required(['ADMIN', 'GURU'])
+@role_required(['ADMIN', 'GURU', 'TUTOR'])
 def edit_project(request, project_id):
     project = get_object_or_404(Project, id=project_id)
     if request.method == 'POST':

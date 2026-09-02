@@ -6,9 +6,15 @@
     <div class="col-12">
         {% include 'getskills/elements/alert.html' %}
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h4 class="card-title">Daftar Semua Invoice Tagihan</h4>
-                <a href="{% url 'payments:admin_add_invoice' %}" class="btn btn-primary btn-sm shadow"><i class="fa fa-plus me-1"></i> Tagih Pembayaran (Buat Invoice)</a>
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h4 class="card-title mb-0">Daftar Semua Invoice Tagihan</h4>
+                <div class="d-flex gap-2">
+                    <form method="POST" action="{% url 'payments:admin_trigger_billing' %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary btn-sm shadow" onclick="return confirm('Apakah Anda yakin ingin mencetak tagihan bulanan untuk semua siswa aktif sekarang?');"><i class="fa fa-refresh me-1"></i> Cetak Tagihan Bulanan (Otomatis)</button>
+                    </form>
+                    <a href="{% url 'payments:admin_add_invoice' %}" class="btn btn-primary btn-sm shadow"><i class="fa fa-plus me-1"></i> Tagih Pembayaran (Buat Invoice)</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

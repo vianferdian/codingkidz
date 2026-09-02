@@ -8,10 +8,6 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h4 class="card-title">Verifikasi Bukti Transfer Pembayaran</h4>
-                <form method="POST" action="{% url 'payments:admin_trigger_billing' %}" class="d-inline">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-primary btn-sm shadow" onclick="return confirm('Apakah Anda yakin ingin mencetak tagihan bulanan untuk semua siswa aktif sekarang?');"><i class="fa fa-refresh me-1"></i> Cetak Tagihan Bulanan (Otomatis)</button>
-                </form>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

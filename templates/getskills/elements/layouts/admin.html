@@ -170,6 +170,7 @@
         <div class="content-body">
             <div class="container-fluid">
                 {% block message %}
+                {% include 'getskills/elements/alert.html' %}
                 {% endblock %}
                 
                 {% block content %}
@@ -224,38 +225,56 @@
     <script src="{% static 'getskills/vendor/sweetalert2/dist/sweetalert2.min.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        function handleDelete(url, msg) {
-            let targetUrl = url;
-            let targetMsg = msg || 'Apakah Anda yakin ingin menghapus data ini?';
+        function handleConfirmAction(options) {
+            let targetUrl = options.url || null;
+            let targetForm = options.form || null;
+            let targetMsg = options.msg || 'Apakah Anda yakin ingin melanjutkan aksi ini?';
+            
+            let isDelete = /hapus|delete/i.test(targetMsg);
+            let titleText = isDelete ? 'Konfirmasi Hapus' : 'Konfirmasi';
+            let confirmBtnText = isDelete ? '<i class="fa fa-trash me-1"></i> Ya, Hapus' : '<i class="fa fa-check me-1"></i> Ya, Lanjutkan';
+            let confirmBtnClass = isDelete ? 'btn btn-danger btn-sm px-4 ms-2 shadow-sm' : 'btn btn-primary btn-sm px-4 ms-2 shadow-sm';
 
             if (typeof Swal !== 'undefined') {
                 Swal.fire({
-                    title: 'Konfirmasi Hapus',
+                    title: titleText,
                     text: targetMsg,
-                    icon: 'warning',
+                    icon: isDelete ? 'warning' : 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#e11d48',
                     cancelButtonColor: '#64748b',
-                    confirmButtonText: '<i class="fa fa-trash me-1"></i> Ya, Hapus',
+                    confirmButtonText: confirmBtnText,
                     cancelButtonText: 'Batal',
                     reverseButtons: true,
                     customClass: {
                         popup: 'custom-swal-popup shadow-lg',
-                        confirmButton: 'btn btn-danger btn-sm px-4 ms-2 shadow-sm',
+                        confirmButton: confirmBtnClass,
                         cancelButton: 'btn btn-light btn-sm px-4 shadow-sm'
                     },
                     buttonsStyling: false
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = targetUrl;
+                        if (targetForm) {
+                            targetForm.submit();
+                        } else if (targetUrl && targetUrl !== 'null' && targetUrl !== 'undefined') {
+                            window.location.href = targetUrl;
+                        }
                     }
                 });
             } else {
                 if (confirm(targetMsg)) {
-                    window.location.href = targetUrl;
+                    if (targetForm) {
+                        targetForm.submit();
+                    } else if (targetUrl && targetUrl !== 'null') {
+                        window.location.href = targetUrl;
+                    }
                 }
             }
             return false;
+        }
+
+        function handleDelete(url, msg) {
+            return handleConfirmAction({ url: url, msg: msg });
         }
 
         function confirmDelete(event, msg) {
@@ -265,7 +284,8 @@
             }
             let target = event ? (event.currentTarget || event.target) : null;
             let href = target ? target.getAttribute('href') : null;
-            return handleDelete(href, msg);
+            let form = target ? target.closest('form') : null;
+            return handleConfirmAction({ url: href, form: form, msg: msg });
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -273,11 +293,22 @@
                 const confirmElements = document.querySelectorAll('[onclick*="confirm("]');
                 confirmElements.forEach(function(el) {
                     let rawAttr = el.getAttribute('onclick');
-                    if (rawAttr && rawAttr.includes('confirm(') && !rawAttr.includes('handleDelete')) {
+                    if (rawAttr && rawAttr.includes('confirm(') && !rawAttr.includes('handleConfirmAction') && !rawAttr.includes('handleDelete')) {
                         let match = rawAttr.match(/confirm\((['"])(.*?)\1\)/);
-                        let msg = match ? match[2] : 'Apakah Anda yakin ingin menghapus data ini?';
+                        let msg = match ? match[2] : 'Apakah Anda yakin?';
                         let href = el.getAttribute('href');
-                        el.setAttribute('onclick', `return handleDelete('${href}', '${msg.replace(/'/g, "\\'")}');`);
+                        let form = el.closest('form');
+
+                        el.removeAttribute('onclick');
+                        el.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleConfirmAction({
+                                url: href,
+                                form: form,
+                                msg: msg
+                            });
+                        });
                     }
                 });
             }

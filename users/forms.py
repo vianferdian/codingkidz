@@ -133,22 +133,24 @@ class EditUserForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
-    email =  forms.EmailField()
+    email = forms.CharField(label='Email / Kode Siswa')
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
 
     def clean(self):
-        email = self.cleaned_data.get('email')
+        login_input = self.cleaned_data.get('email')
         password = self.cleaned_data.get('password')
-        user = authenticate(email=email, password=password)
+        user = authenticate(username=login_input, password=password)
         if not user or not user.is_active:
-            raise forms.ValidationError("Sorry, that login was invalid. Please try again.")
+            raise forms.ValidationError("Login gagal. Harap periksa kembali Email / Kode Siswa dan Kata Sandi Anda.")
+        self.user_cache = user
         return self.cleaned_data
         
     def login(self, request):
-        email = self.cleaned_data.get('email')
+        if hasattr(self, 'user_cache'):
+            return self.user_cache
+        login_input = self.cleaned_data.get('email')
         password = self.cleaned_data.get('password')
-        user = authenticate(email=email, password=password)
-        return user
+        return authenticate(username=login_input, password=password)
         
 
 class EmailValidationOnForgotPassword(PasswordResetForm):

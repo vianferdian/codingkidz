@@ -88,20 +88,20 @@
 							</div>
 							<div class="col-xl-6 col-md-6">
 								<div class="sign-in-your">
-									<h4 class="fs-20 font-w800 text-black">Sign in your account</h4>
-									<span>Welcome back! Login with your data that you entered<br> during registration</span>
+									<h4 class="fs-20 font-w800 text-black mb-2">Masuk ke Akun Anda</h4>
+									<p class="mb-4 text-muted">Selamat datang kembali di Portal <strong>Neper CodingKidz</strong>!<br>Silakan masuk menggunakan Email atau Kode Siswa Anda.</p>
 									{% include 'getskills/elements/alert.html' %}
 									<form method="post">{% csrf_token %}
 										<div class="mb-3">
-											<label class="mb-1"><strong>Email</strong></label>
-                      {{ form.email|attr:"type:email"|attr:"class:form-control"|attr:"placeholder:Email" }}
+											<label class="mb-1"><strong>Email / Kode Siswa</strong></label>
+                      {{ form.email|attr:"type:text"|attr:"class:form-control"|attr:"placeholder:Email atau Kode Siswa (cth: SN2026001)" }}
                       <div class="text-danger w-100 d-block mt-1">
                         {{ form.email.errors }}
                       </div>
 										</div>
 										<div class="mb-3">
-											<label class="mb-1"><strong>Password</strong></label>
-                      {{ form.password|attr:"class:form-control"|attr:"placeholder:Password"|attr:"id:dz-password"|attr:"type:password" }}
+											<label class="mb-1"><strong>Kata Sandi</strong></label>
+                      {{ form.password|attr:"class:form-control"|attr:"placeholder:Masukkan Kata Sandi"|attr:"id:dz-password"|attr:"type:password" }}
                       <div class="text-danger w-100 d-block mt-1">
                         {{ form.password.errors }}
                       </div>
@@ -110,12 +110,12 @@
 											<div class="mb-3">
 											   <div class="form-check custom-checkbox ms-1">
 													<input type="checkbox" class="form-check-input" id="basic_checkbox_1">
-													<label class="form-check-label" for="basic_checkbox_1">Remember my preference</label>
+													<label class="form-check-label" for="basic_checkbox_1">Ingat saya</label>
 												</div>
 											</div>
 										</div>
 										<div class="text-center">
-											<button type="submit" class="btn btn-primary btn-block">Sign Me In</button>
+											<button type="submit" class="btn btn-primary btn-block shadow">Masuk Sekarang</button>
 										</div>
 									</form>
 

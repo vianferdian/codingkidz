@@ -77,3 +77,64 @@
     </div>
 </div>
 {% endblock %}
+
+{% block additional_js %}
+{% if enrolled_mapping_json %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        const courseSelect = document.getElementById('id_course');
+        const studentSelect = document.getElementById('id_student');
+        const enrolledMapping = {{ enrolled_mapping_json|safe }};
+
+        if (courseSelect && studentSelect) {
+            const originalOptions = Array.from(studentSelect.options).map(opt => ({
+                value: opt.value,
+                text: opt.text
+            }));
+
+            function updateStudentOptions() {
+                const selectedCourseId = courseSelect.value;
+                const enrolledStudentIds = enrolledMapping[selectedCourseId] || [];
+
+                const currentSelectedValue = studentSelect.value;
+                studentSelect.innerHTML = '';
+
+                originalOptions.forEach(opt => {
+                    if (opt.value === '') {
+                        studentSelect.add(new Option(opt.text, opt.value));
+                        return;
+                    }
+
+                    const studentId = parseInt(opt.value, 10);
+                    if (!enrolledStudentIds.includes(studentId)) {
+                        const newOpt = new Option(opt.text, opt.value);
+                        if (opt.value === currentSelectedValue) {
+                            newOpt.selected = true;
+                        }
+                        studentSelect.add(newOpt);
+                    }
+                });
+
+                if (window.jQuery) {
+                    const $st = jQuery(studentSelect);
+                    if ($st.data('selectpicker') || $st.hasClass('selectpicker')) {
+                        $st.selectpicker('refresh');
+                    }
+                    if ($st.data('niceSelect')) {
+                        $st.niceSelect('update');
+                    }
+                }
+            }
+
+            courseSelect.addEventListener('change', updateStudentOptions);
+            if (window.jQuery) {
+                jQuery(courseSelect).on('change', updateStudentOptions);
+            }
+            updateStudentOptions();
+        }
+    }, 200);
+});
+</script>
+{% endif %}
+{% endblock %}

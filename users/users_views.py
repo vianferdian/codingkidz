@@ -70,9 +70,11 @@ def user_details(request,id):
 		from django.core.exceptions import PermissionDenied
 		raise PermissionDenied("You do not have permission to view this resource.")
 	user_obj=get_object_or_404(CustomUser,id=id)
+	student_profile = getattr(user_obj, 'student_profile', None)
 
 	context={
 		"user_obj":user_obj,
+		"student_profile":student_profile,
 		"user_group_perms":user_obj.get_group_permissions(),
 		"user_perms":user_obj.get_user_permissions(),
 		"page_title":"User Details"
@@ -194,13 +196,41 @@ def edit_user(request,id):
 		from django.core.exceptions import PermissionDenied
 		raise PermissionDenied("You do not have permission to perform this action.")
 	user_obj = get_object_or_404(CustomUser,id=id)
+
+	if hasattr(user_obj, 'student_profile'):
+		from students.forms import StudentEditForm
+		student = user_obj.student_profile
+		if request.method == 'POST':
+			form = StudentEditForm(request.POST, request.FILES, instance=student)
+			if form.is_valid():
+				form.save()
+				messages.success(request, "Profil Anda berhasil diperbarui.")
+				if request.user.role == 'STUDENT':
+					return redirect('getskills:index')
+				return redirect('getskills:user-details', id=id)
+			else:
+				for field, errors in form.errors.items():
+					for err in errors:
+						messages.error(request, f"{field}: {err}")
+
+		else:
+			form = StudentEditForm(instance=student)
+		context = {
+			'form': form,
+			'student': student,
+			'user_obj': user_obj,
+			'page_title': 'Edit Profil Siswa'
+		}
+		return render(request, 'students/student_edit.html', context)
+
 	if request.method == 'POST':
 		form = EditUserForm(request.POST, request.FILES, instance=user_obj)
 		if form.is_valid():
 			user_obj = form.save()
-			user_obj.groups.clear()
-			for i in form.cleaned_data['groups']:
-				user_obj.groups.add(i)
+			if 'groups' in form.cleaned_data:
+				user_obj.groups.clear()
+				for i in form.cleaned_data['groups']:
+					user_obj.groups.add(i)
 			if request.user.id == id:
 				messages.success(request, "Profil Anda berhasil diperbarui.")
 				return redirect('getskills:user-details', id=id)
@@ -208,6 +238,7 @@ def edit_user(request,id):
 	else:
 		form = EditUserForm(instance=user_obj)
 	return render(request, 'getskills/modules/add-user.html', {'form': form,"page_title":"Edit User"})
+
 
 def login_user(request):
 	message=''

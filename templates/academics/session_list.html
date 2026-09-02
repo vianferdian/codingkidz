@@ -11,7 +11,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h4 class="card-title">Jadwal Sesi Pertemuan Kelas</h4>
-                {% if request.user.role == 'ADMIN' %}
+                {% if request.user.role == 'ADMIN' or request.user.role == 'TUTOR' or request.user.role == 'GURU' %}
                 <a href="{% url 'academics:add_session' %}" class="btn btn-primary btn-sm shadow"><i class="fa fa-plus me-1"></i> Tambah Jadwal Pertemuan</a>
                 {% endif %}
             </div>
@@ -28,7 +28,7 @@
                                 <th><strong>Tutor Pengajar</strong></th>
                                 <th><strong>Ruang</strong></th>
                                 <th><strong>Status</strong></th>
-                                {% if request.user.role == 'ADMIN' %}
+                                {% if request.user.role == 'ADMIN' or request.user.role == 'TUTOR' or request.user.role == 'GURU' %}
                                 <th><strong>Aksi</strong></th>
                                 {% endif %}
                             </tr>
@@ -52,14 +52,17 @@
                                         <span class="badge light badge-danger">{{ session.status }}</span>
                                     {% endif %}
                                 </td>
-                                {% if request.user.role == 'ADMIN' %}
+                                {% if request.user.role == 'ADMIN' or request.user.role == 'TUTOR' or request.user.role == 'GURU' %}
                                 <td>
                                     <div class="d-flex gap-2">
                                         <a href="{% url 'academics:edit_session' session.id %}" class="btn btn-warning btn-xxs shadow"><i class="fa fa-edit"></i> Edit</a>
+                                        {% if request.user.role == 'ADMIN' %}
                                         <a href="{% url 'academics:delete_session' session.id %}" class="btn btn-danger btn-xxs shadow" onclick="return confirmDelete(event, 'Apakah Anda yakin ingin menghapus sesi pertemuan ini?');"><i class="fa fa-trash"></i> Hapus</a>
+                                        {% endif %}
                                     </div>
                                 </td>
                                 {% endif %}
+
                             </tr>
                             {% empty %}
                             <tr>

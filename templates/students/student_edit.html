@@ -12,7 +12,6 @@
                 <div class="basic-form">
                     <form method="post" enctype="multipart/form-data" novalidate autocomplete="off">
                         {% csrf_token %}
-                        {% include 'getskills/elements/alert.html' %}
                         
                         <div class="row">
                             <!-- Avatar Upload -->
@@ -23,7 +22,7 @@
                                         <label for="id_avatar"><i class="fas fa-pencil-alt"></i></label>
                                     </div>
                                     <div class="avatar-preview">
-                                        <div id="imagePreview" style="background-image: url('{{ student.user.avatar.url }}');"></div>
+                                        <div id="imagePreview" style="background-image: url('{% if student.user.avatar %}/media/{{ student.user.avatar }}{% else %}{% static "getskills/images/avatar/default_avatar.svg" %}{% endif %}');"></div>
                                     </div>
                                 </div>
                                 <div class="text-danger w-100 d-block mt-1">
@@ -60,7 +59,11 @@
                         <div class="row col-md-12 mt-3">
                             <div class="mb-3 col-md-6">
                                 <label class="form-label">Kode Siswa <span class="text-danger">*</span></label>
-                                {{ form.student_code|attr:"type:text"|attr:"class:form-control" }}
+                                {% if request.user.role == 'STUDENT' %}
+                                    {{ form.student_code|attr:"type:text"|attr:"class:form-control"|attr:"readonly:readonly" }}
+                                {% else %}
+                                    {{ form.student_code|attr:"type:text"|attr:"class:form-control" }}
+                                {% endif %}
                                 <div class="text-danger w-100 d-block mt-1">
                                     {{ form.student_code.errors }}
                                 </div>
@@ -109,13 +112,14 @@
                         </div>
 
                         <div class="row">
-                            <div class="mb-3 col-md-6">
+                            <div class="mb-3 {% if request.user.role == 'ADMIN' or request.user.role == 'GURU' %}col-md-6{% else %}col-md-12{% endif %}">
                                 <label class="form-label">Tanggal Lahir</label>
                                 {{ form.birth_date }}
                                 <div class="text-danger w-100 d-block mt-1">
                                     {{ form.birth_date.errors }}
                                 </div>
                             </div>
+                            {% if request.user.role == 'ADMIN' or request.user.role == 'GURU' %}
                             <div class="mb-3 col-md-6">
                                 <label class="form-label">Status <span class="text-danger">*</span></label>
                                 {{ form.status|attr:"class:form-control default-select wide" }}
@@ -123,7 +127,9 @@
                                     {{ form.status.errors }}
                                 </div>
                             </div>
+                            {% endif %}
                         </div>
+
 
                         <div class="row">
                             <div class="mb-3 col-md-12">
@@ -136,7 +142,12 @@
                         </div>
 
                         <button type="submit" class="btn btn-secondary mt-4 mb-5">Perbarui</button>
-                        <a href="{% url 'students:student_list' %}" class="btn btn-primary mt-4 mb-5">Batal</a>
+                        {% if request.user.role == 'STUDENT' %}
+                            <a href="{% url 'getskills:user-details' id=request.user.id %}" class="btn btn-primary mt-4 mb-5">Batal</a>
+                        {% else %}
+                            <a href="{% url 'students:student_list' %}" class="btn btn-primary mt-4 mb-5">Batal</a>
+                        {% endif %}
+
                     </form>
                 </div>
             </div>

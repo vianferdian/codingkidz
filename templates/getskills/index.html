@@ -421,7 +421,7 @@
         <div class="card nck-stat shadow-sm">
             <div class="nck-stat-header">
                 <span class="nck-stat-lbl">Total Siswa Saya</span>
-                <div class="nck-stat-icon nck-icon-primary"><i class="fa fa-users"></i></div>
+                <div class="nck-stat-icon nck-icon-primary"><i class="fas fa-users"></i></div>
             </div>
             <div class="nck-stat-val">{{ my_students_count }}</div>
         </div>
@@ -430,7 +430,7 @@
         <div class="card nck-stat shadow-sm">
             <div class="nck-stat-header">
                 <span class="nck-stat-lbl">Kelas yang Diajar</span>
-                <div class="nck-stat-icon nck-icon-secondary"><i class="fa fa-book"></i></div>
+                <div class="nck-stat-icon nck-icon-secondary"><i class="fas fa-book"></i></div>
             </div>
             <div class="nck-stat-val">{{ my_classes_count }}</div>
         </div>
@@ -439,7 +439,7 @@
         <div class="card nck-stat shadow-sm">
             <div class="nck-stat-header">
                 <span class="nck-stat-lbl">Tugas Perlu Review</span>
-                <div class="nck-stat-icon nck-icon-warn"><i class="fa fa-clock-o"></i></div>
+                <div class="nck-stat-icon nck-icon-warn"><i class="fas fa-clock"></i></div>
             </div>
             <div class="nck-stat-val">{{ pending_review_count }}</div>
         </div>
@@ -452,16 +452,16 @@
             </div>
             <div class="card-body pt-2">
                 <a href="{% url 'projects:submission_list' %}" class="nck-quick-item">
-                    <div class="qi-icon"><i class="fa fa-tasks"></i></div>
+                    <div class="qi-icon" style="background: rgba(255, 106, 89, 0.15); color: #ff6a59;"><i class="fas fa-tasks"></i></div>
                     <span class="qi-label">Review Tugas Siswa</span>
                     {% if pending_review_count > 0 %}<span class="badge badge-warning qi-badge">{{ pending_review_count }}</span>{% endif %}
                 </a>
                 <a href="{% url 'academics:session_list' %}" class="nck-quick-item">
-                    <div class="qi-icon"><i class="fa fa-calendar"></i></div>
+                    <div class="qi-icon" style="background: rgba(76, 188, 154, 0.15); color: #4cbc9a;"><i class="fas fa-calendar-alt"></i></div>
                     <span class="qi-label">Jadwal Sesi</span>
                 </a>
                 <a href="{% url 'attendance:attendance_list' %}" class="nck-quick-item">
-                    <div class="qi-icon"><i class="fa fa-check-square-o"></i></div>
+                    <div class="qi-icon" style="background: rgba(232, 62, 140, 0.15); color: #e83e8c;"><i class="fas fa-user-check"></i></div>
                     <span class="qi-label">Catat Kehadiran</span>
                 </a>
             </div>
@@ -489,7 +489,7 @@
         <div class="card nck-stat shadow-sm">
             <div class="nck-stat-header">
                 <span class="nck-stat-lbl">Kelas Aktif</span>
-                <div class="nck-stat-icon nck-icon-info"><i class="fa fa-book"></i></div>
+                <div class="nck-stat-icon nck-icon-info"><i class="fas fa-book"></i></div>
             </div>
             <div class="nck-stat-val">{{ active_classes_count }}</div>
         </div>
@@ -498,7 +498,7 @@
         <div class="card nck-stat shadow-sm">
             <div class="nck-stat-header">
                 <span class="nck-stat-lbl">Tugas Aktif</span>
-                <div class="nck-stat-icon nck-icon-secondary"><i class="fa fa-code"></i></div>
+                <div class="nck-stat-icon nck-icon-secondary"><i class="fas fa-code"></i></div>
             </div>
             <div class="nck-stat-val">{{ active_projects_count }}</div>
         </div>
@@ -507,7 +507,7 @@
         <div class="card nck-stat shadow-sm">
             <div class="nck-stat-header">
                 <span class="nck-stat-lbl">Tingkat Kehadiran</span>
-                <div class="nck-stat-icon nck-icon-green"><i class="fa fa-calendar-check-o"></i></div>
+                <div class="nck-stat-icon nck-icon-green"><i class="fas fa-calendar-check"></i></div>
             </div>
             <div class="nck-stat-val">{{ attendance_rate }}%</div>
         </div>
@@ -516,7 +516,7 @@
         <div class="card nck-stat shadow-sm">
             <div class="nck-stat-header">
                 <span class="nck-stat-lbl">Tagihan Belum Bayar</span>
-                <div class="nck-stat-icon nck-icon-warn"><i class="fa fa-credit-card"></i></div>
+                <div class="nck-stat-icon nck-icon-warn"><i class="fas fa-credit-card"></i></div>
             </div>
             <div class="nck-stat-val">{{ unpaid_invoices_count }}</div>
         </div>
@@ -529,22 +529,22 @@
             </div>
             <div class="card-body pt-2">
                 <a href="{% url 'academics:class_list' %}" class="nck-quick-item">
-                    <div class="qi-icon"><i class="fa fa-book"></i></div>
+                    <div class="qi-icon" style="background: rgba(76, 188, 154, 0.15); color: #4cbc9a;"><i class="fas fa-book"></i></div>
                     <span class="qi-label">Kelas Saya</span>
                 </a>
                 <a href="{% url 'projects:project_list' %}" class="nck-quick-item">
-                    <div class="qi-icon"><i class="fa fa-code"></i></div>
+                    <div class="qi-icon" style="background: rgba(91, 141, 238, 0.15); color: #5b8dee;"><i class="fas fa-code"></i></div>
                     <span class="qi-label">Tugas & Project</span>
                     {% if active_projects_count > 0 %}<span class="badge badge-info qi-badge">{{ active_projects_count }}</span>{% endif %}
                 </a>
                 <a href="{% url 'payments:student_invoice_list' %}" class="nck-quick-item">
-                    <div class="qi-icon"><i class="fa fa-credit-card"></i></div>
-                    <span class="qi-label">Tagihan & Pembayaran</span>
+                    <div class="qi-icon" style="background: rgba(255, 106, 89, 0.15); color: #ff6a59;"><i class="fas fa-credit-card"></i></div>
+                    <span class="qi-label">Tagihan Saya</span>
                     {% if unpaid_invoices_count > 0 %}<span class="badge badge-danger qi-badge">{{ unpaid_invoices_count }}</span>{% endif %}
                 </a>
-                <a href="{% url 'academics:session_list' %}" class="nck-quick-item">
-                    <div class="qi-icon"><i class="fa fa-calendar"></i></div>
-                    <span class="qi-label">Jadwal Les</span>
+                <a href="{% url 'attendance:student_attendance_list' %}" class="nck-quick-item">
+                    <div class="qi-icon" style="background: rgba(153, 102, 255, 0.15); color: #9966ff;"><i class="fas fa-calendar-check"></i></div>
+                    <span class="qi-label">Kehadiran Saya</span>
                 </a>
             </div>
         </div>

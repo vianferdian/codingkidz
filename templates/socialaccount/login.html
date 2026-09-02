@@ -1,0 +1,72 @@
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="id" class="h-100">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Konfirmasi Login Google - Neper CodingKidz</title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'getskills/images/favicon.png' %}">
+    <link href="{% static 'getskills/css/style.css' %}" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e11d48;
+            --primary-hover: #be123c;
+        }
+        body {
+            background-image: url("{% static 'getskills/images/bg-1.jpg' %}");
+            background-size: cover;
+            background-position: center;
+        }
+        .login-card {
+            border-radius: 1.25rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            background: #ffffff;
+        }
+        .btn-primary {
+            background-color: var(--primary) !important;
+            border-color: var(--primary) !important;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover) !important;
+            border-color: var(--primary-hover) !important;
+        }
+    </style>
+</head>
+<body class="h-100">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center justify-content-center">
+            <div class="col-xl-5 col-lg-6 col-md-8">
+                <div class="card login-card p-4 text-center">
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <a href="/" class="d-inline-flex align-items-center gap-2" style="text-decoration: none;">
+                                <img src="{% static 'getskills/images/gamepad.png' %}" width="40" height="40" alt="Logo">
+                                <span style="font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 800; line-height: 1.2;">
+                                    <span style="color: var(--primary);">Neper</span> <span style="color: #374557;">CodingKidz</span>
+                                </span>
+                            </a>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="d-inline-block p-3 rounded-circle bg-light mb-3">
+                                <svg width="40" height="40" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.9C6.2 7.5 8.9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/><path fill="#FBBC05" d="M5.3 14.7c-.2-.7-.4-1.4-.4-2.2s.2-1.5.4-2.2L1.6 7.4C.6 9.4 0 11.6 0 14s.6 4.6 1.6 6.6l3.7-2.9c-.2-.7-.4-1.4-.4-2.2z"/><path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.5-6.7-5.3L1.6 16C3.5 19.8 7.4 22.4 12 23z"/></svg>
+                            </div>
+                            <h4 class="font-w700 text-black">Masuk dengan Akun Google</h4>
+                            <p class="text-muted fs-14">Anda akan menghubungkan akun Google Anda dengan Portal <strong>Neper CodingKidz</strong>.</p>
+                        </div>
+
+                        <form method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary btn-block py-3 font-w700 shadow fs-16 mb-3">Lanjutkan ke Google</button>
+                            <a href="{% url 'getskills:login' %}" class="btn btn-outline-secondary btn-block">Batal</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

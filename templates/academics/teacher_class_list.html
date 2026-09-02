@@ -1,24 +1,69 @@
 {% extends 'getskills/elements/layouts/admin.html' %}
 {% load static %}
 
+{% block message %}
+{% include 'getskills/elements/alert.html' %}
+{% endblock %}
+
 {% block content %}
+<!-- Section 1: Assigned Courses / Classes for Tutor -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title text-primary"><i class="fas fa-chalkboard-teacher me-2"></i> Program Les / Kelas Yang Saya Ajar</h4>
+                <a href="{% url 'academics:add_session' %}" class="btn btn-primary btn-sm shadow"><i class="fa fa-plus me-1"></i> Tambah Pertemuan Sesi</a>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for course in courses %}
+                    <div class="col-xl-4 col-md-6 mb-3">
+                        <div class="card border border-primary h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary"><strong>{{ course.name }}</strong></h5>
+                                <p class="card-text text-muted fs-13 mb-2">{{ course.description|default:"Tidak ada deskripsi."|truncatewords:15 }}</p>
+                                <hr>
+                                <div class="d-flex justify-content-between align-items-center fs-13 mb-3">
+                                    <span>Kode: <strong>{{ course.code }}</strong></span>
+                                    <span>Target Sesi: <strong>{{ course.total_sessions }} Pertemuan</strong></span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge light badge-success">Aktif</span>
+                                    <a href="{% url 'academics:session_list' %}" class="btn btn-outline-primary btn-xs"><i class="fas fa-calendar-alt me-1"></i> Lihat Sesi Pertemuan</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-center p-4">
+                        <p class="text-muted mb-0">Belum ada program les/kelas yang ditugaskan kepada Anda saat ini.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section 2: Enrolled Students in Tutor's Classes -->
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Kelas Les Yang Saya Ajar</h4>
+                <h4 class="card-title"><i class="fas fa-user-graduate me-2"></i> Daftar Siswa Terdaftar di Kelas Saya</h4>
             </div>
             <div class="card-body">
                 <div class="row">
                     {% for enrollment in enrollments %}
-                    <div class="col-xl-4 col-md-6">
-                        <div class="card border">
+                    <div class="col-xl-4 col-md-6 mb-3">
+                        <div class="card border h-100">
                             <div class="card-body">
                                 <h5 class="card-title text-primary"><strong>{{ enrollment.course.name }}</strong></h5>
-                                <p class="card-text text-muted">Siswa: {{ enrollment.student.user.first_name }} {{ enrollment.student.user.last_name }}</p>
+                                <p class="card-text text-dark font-w600 mb-1"><i class="fas fa-user me-1 text-muted"></i> {{ enrollment.student.user.first_name }} {{ enrollment.student.user.last_name }}</p>
+                                <p class="text-muted fs-12 mb-2">Kode Siswa: <strong>{{ enrollment.student.student_code }}</strong></p>
                                 <hr>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span>Total Sesi: <strong>{{ enrollment.course.total_sessions }}</strong></span>
+                                <div class="d-flex justify-content-between align-items-center fs-13">
+                                    <span>Status Siswa:</span>
                                     {% if enrollment.status == 'ACTIVE' %}
                                         <span class="badge light badge-success">Aktif</span>
                                     {% else %}
@@ -29,8 +74,8 @@
                         </div>
                     </div>
                     {% empty %}
-                    <div class="col-12 text-center p-5">
-                        <p class="text-muted">Belum ada kelas les yang ditugaskan kepada Anda saat ini.</p>
+                    <div class="col-12 text-center p-4">
+                        <p class="text-muted mb-0">Belum ada siswa yang terdaftar di kelas Anda.</p>
                     </div>
                     {% endfor %}
                 </div>

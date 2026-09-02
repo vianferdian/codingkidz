@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Registrasi Berhasil - Neper CodingKidz</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px;">
+    <div style="max-width: 600px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+        <div style="text-align: center; margin-bottom: 25px;">
+            <h2 style="color: #49108B; margin: 0;">🎮 Neper CodingKidz</h2>
+            <p style="color: #888888; font-size: 14px; margin-top: 5px;">Platform Pembelajaran Coding Anak</p>
+        </div>
+        
+        <hr style="border: none; border-top: 1px solid #eeeeee; margin-bottom: 25px;">
+
+        <h3 style="color: #333333;">Selamat, {{ user.first_name }} {{ user.last_name }}! 🎉</h3>
+        <p style="color: #555555; line-height: 1.6;">
+            Pendaftaran akun siswa baru Anda di <strong>Neper CodingKidz</strong> telah <strong>BERHASIL</strong>. Berikut adalah rincian data diri dan <strong>Kode Siswa</strong> resmi Anda untuk masuk ke sistem:
+        </p>
+
+        <div style="background-color: #f8f9fa; border-left: 4px solid #49108B; padding: 18px; margin: 20px 0; border-radius: 6px;">
+            <p style="margin: 0 0 10px 0; color: #49108B; font-size: 16px;"><strong>📌 KODE SISWA: <span style="background: #e0d5f5; padding: 2px 8px; border-radius: 4px;">{{ student.student_code }}</span></strong></p>
+            <hr style="border: none; border-top: 1px dashed #dddddd; margin: 10px 0;">
+            <p style="margin: 6px 0; color: #555555;">• <strong>Nama Lengkap:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+            <p style="margin: 6px 0; color: #555555;">• <strong>Email Registered:</strong> {{ user.email }}</p>
+            {% if user.phone_number %}<p style="margin: 6px 0; color: #555555;">• <strong>No. Telepon/WA:</strong> {{ user.phone_number }}</p>{% endif %}
+            {% if student.school_name %}<p style="margin: 6px 0; color: #555555;">• <strong>Sekolah:</strong> {{ student.school_name }}</p>{% endif %}
+            {% if student.parent_name %}<p style="margin: 6px 0; color: #555555;">• <strong>Nama Orang Tua:</strong> {{ student.parent_name }} ({{ student.parent_phone }})</p>{% endif %}
+            {% if student.address %}<p style="margin: 6px 0; color: #555555;">• <strong>Alamat:</strong> {{ student.address }}</p>{% endif %}
+        </div>
+
+        <p style="color: #555555; line-height: 1.6;">
+            Anda dapat melakukan masuk (*login*) menggunakan <strong>Email</strong> atau <strong>Kode Siswa</strong> di atas beserta password yang telah Anda buat.
+        </p>
+
+        <div style="text-align: center; margin-top: 30px; margin-bottom: 25px;">
+            <a href="{{ login_url }}" style="background-color: #49108B; color: #ffffff; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; display: inline-block;">Masuk ke Akun Saya</a>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #eeeeee; margin-top: 30px; margin-bottom: 20px;">
+        <p style="color: #aaaaaa; font-size: 12px; text-align: center;">
+            &copy; 2026 Neper CodingKidz. Email ini dikirim secara otomatis setelah pendaftaran siswa baru.
+        </p>
+    </div>
+</body>
+</html>

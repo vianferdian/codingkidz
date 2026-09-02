@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+<head>
+    {% load static widget_tweaks custom_tags %}
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Registrasi Siswa Baru - Neper CodingKidz" />
+    <meta name="format-detection" content="telephone=no">
+    
+    <title>Registrasi Siswa - Neper CodingKidz</title>
+    
+    <link rel="shortcut icon" type="image/png" href="{% static 'getskills/images/gamepad.png' %}" />
+
+    {% for cssurl in dz_array.global.css %}
+    <link rel="stylesheet" href="{% static cssurl %}">
+    {% endfor %}
+    
+    <style>
+        :root {
+            --primary: #e11d48;
+            --primary-hover: #be123c;
+            --primary-dark: #9f1239;
+            --secondary: #0f172a;
+        }
+        .btn-primary {
+            background-color: var(--primary) !important;
+            border-color: var(--primary) !important;
+            color: #fff !important;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover) !important;
+            border-color: var(--primary-hover) !important;
+        }
+        .text-primary {
+            color: var(--primary) !important;
+        }
+        .avatar-upload {
+            position: relative;
+            max-width: 140px;
+            margin: 0 auto 15px;
+        }
+        .avatar-upload .avatar-edit {
+            position: absolute;
+            right: 5px;
+            z-index: 1;
+            top: 5px;
+        }
+        .avatar-upload .avatar-edit input {
+            display: none;
+        }
+        .avatar-upload .avatar-edit label {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            margin-bottom: 0;
+            border-radius: 100%;
+            background: #ffffff;
+            border: 1px solid transparent;
+            box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+            cursor: pointer;
+            font-weight: normal;
+            transition: all 0.2s ease-in-out;
+            text-align: center;
+            line-height: 32px;
+        }
+        .avatar-upload .avatar-edit label:hover {
+            background: #f1f1f1;
+            border-color: #d6d6d6;
+        }
+        .avatar-upload .avatar-preview {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            border-radius: 100%;
+            border: 4px solid var(--primary);
+            box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+        }
+        .avatar-upload .avatar-preview > div {
+            width: 100%;
+            height: 100%;
+            border-radius: 100%;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
+</head>
+
+<body class="body h-100" style="background-image: url({% static 'getskills/images/bg-1.jpg' %}); background-size: cover; background-attachment: fixed;">
+    <div class="container py-5">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-xl-9 col-lg-10">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body p-4 p-md-5">
+                        <!-- Header / Logo -->
+                        <div class="text-center mb-4">
+                            <a href="{% url 'getskills:index' %}" class="d-inline-flex align-items-center gap-2 mb-2" style="text-decoration: none;">
+                                <img src="{% static 'getskills/images/gamepad.png' %}" width="40" height="40" alt="Logo">
+                                <span style="font-family: 'Poppins', sans-serif; font-size: 26px; font-weight: 800; white-space: nowrap;">
+                                    <span style="color: var(--primary);">Neper</span> <span style="color: #374557;">CodingKidz</span>
+                                </span>
+                            </a>
+                            <h4 class="fs-22 font-w800 text-black mt-2">Form Pendaftaran Siswa Baru</h4>
+                            <p class="text-muted fs-14">Lengkapi formulir di bawah ini untuk membuat akun Anda. Kode Siswa akan dibuatkan secara otomatis!</p>
+                        </div>
+
+                        {% include 'getskills/elements/alert.html' %}
+
+                        <form method="post" enctype="multipart/form-data" novalidate autocomplete="off">
+                            {% csrf_token %}
+
+                            <!-- Avatar Upload Section -->
+                            <div class="row justify-content-center mb-4">
+                                <div class="col-md-4 text-center">
+                                    <div class="avatar-upload">
+                                        <div class="avatar-edit">
+                                            {{ form.avatar|attr:"type:file" }}
+                                            <label for="id_avatar"><i class="fas fa-pencil-alt text-primary"></i></label>
+                                        </div>
+                                        <div class="avatar-preview">
+                                            <div id="imagePreview" style="background-image: url('{% static 'getskills/images/avatar/default_avatar.svg' %}');"></div>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted d-block">Foto Profil (Opsional)</small>
+                                    <div class="text-danger w-100 d-block mt-1">
+                                        {{ form.avatar.errors }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form Fields -->
+                            <div class="row">
+                                <!-- First & Last Name -->
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label font-w600 text-black">Nama Depan <span class="text-danger">*</span></label>
+                                    {{ form.first_name|attr:"type:text"|attr:"class:form-control"|attr:"placeholder:Masukkan Nama Depan" }}
+                                    <div class="text-danger w-100 d-block mt-1">
+                                        {{ form.first_name.errors }}
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label font-w600 text-black">Nama Belakang <span class="text-danger">*</span></label>
+                                    {{ form.last_name|attr:"type:text"|attr:"class:form-control"|attr:"placeholder:Masukkan Nama Belakang" }}
+                                    <div class="text-danger w-100 d-block mt-1">
+                                        {{ form.last_name.errors }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Email & Password -->
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label font-w600 text-black">Email <span class="text-danger">*</span></label>
+                                    {{ form.email|attr:"type:email"|attr:"class:form-control"|attr:"placeholder:contoh@email.com" }}
+                                    <div class="text-danger w-100 d-block mt-1">
+                                        {{ form.email.errors }}
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label font-w600 text-black">Kata Sandi / Password <span class="text-danger">*</span></label>
+                                    {{ form.password|attr:"type:password"|attr:"class:form-control"|attr:"placeholder:Buat Kata Sandi" }}
+                                    <div class="text-danger w-100 d-block mt-1">
+                                        {{ form.password.errors }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Gender & School -->
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label font-w600 text-black">Jenis Kelamin <span class="text-danger">*</span></label>
+                                    {{ form.gender|attr:"class:form-control default-select wide" }}
+                                    <div class="text-danger w-100 d-block mt-1">
+                                        {{ form.gender.errors }}
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label font-w600 text-black">Nama Sekolah</label>
+                                    {{ form.school_name|attr:"type:text"|attr:"class:form-control"|attr:"placeholder:Nama Sekolah Asal (opsional)" }}
+                                    <div class="text-danger w-100 d-block mt-1">
+                                        {{ form.school_name.errors }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Parent Name & Phone -->
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label font-w600 text-black">Nama Orang Tua / Wali</label>
+                                    {{ form.parent_name|attr:"type:text"|attr:"class:form-control"|attr:"placeholder:Nama Orang Tua" }}
+                                    <div class="text-danger w-100 d-block mt-1">
+                                        {{ form.parent_name.errors }}
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label font-w600 text-black">No. WhatsApp / Telp Orang Tua</label>
+                                    {{ form.parent_phone|attr:"type:text"|attr:"class:form-control"|attr:"placeholder:081234567890" }}
+                                    <div class="text-danger w-100 d-block mt-1">
+                                        {{ form.parent_phone.errors }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Birth Date -->
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label font-w600 text-black">Tanggal Lahir</label>
+                                    {{ form.birth_date|attr:"class:form-control" }}
+                                    <div class="text-danger w-100 d-block mt-1">
+                                        {{ form.birth_date.errors }}
+                                    </div>
+                                </div>
+                                <!-- Address -->
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label font-w600 text-black">Alamat Rumah</label>
+                                    {{ form.address|attr:"class:form-control"|attr:"placeholder:Alamat tempat tinggal" }}
+                                    <div class="text-danger w-100 d-block mt-1">
+                                        {{ form.address.errors }}
+                                    </div>
+                                </div>
+                            </div>
+
+{% load socialaccount %}
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary btn-block py-3 font-w700 shadow fs-16">Daftar Sekarang</button>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <p class="mb-0 text-muted">Sudah memiliki akun? <a href="{% url 'getskills:login' %}" class="text-primary font-w700">Masuk di sini</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Required vendors -->
+    {% for jsurl in dz_array.global.js.top %}
+    <script src="{% static jsurl %}"></script>
+    {% endfor %}
+    
+    {% for jsurl in dz_array.global.js.bottom %}
+    <script src="{% static jsurl %}"></script>
+    {% endfor %}
+
+    <script>
+       function readURL(input) {
+          if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                   $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+                   $('#imagePreview').hide();
+                   $('#imagePreview').fadeIn(650);
+                }
+                reader.readAsDataURL(input.files[0]);
+          }
+       }
+       $("#id_avatar").change(function() {
+          readURL(this);
+       });
+    </script>
+</body>
+</html>

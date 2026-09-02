@@ -1,7 +1,16 @@
 from django import forms
-from .models import Course, CourseEnrollment, CourseSession
+from .models import Course, CourseEnrollment, CourseSession, CourseTeacher
+from tutors.models import Teacher
 
 class CourseForm(forms.ModelForm):
+    teachers = forms.ModelMultipleChoiceField(
+        queryset=Teacher.objects.filter(status='ACTIVE'),
+        required=False,
+        label='Tutor / Pengajar Les',
+        widget=forms.SelectMultiple(attrs={'class': 'form-control default-select wide'}),
+        help_text='Pilih satu atau lebih Tutor yang mengajar kelas/program les ini'
+    )
+
     class Meta:
         model = Course
         fields = ['code', 'name', 'description', 'price', 'total_sessions', 'status']
@@ -22,14 +31,28 @@ class CourseForm(forms.ModelForm):
             'status': 'Status',
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['teachers'].initial = Teacher.objects.filter(course_teachers__course=self.instance)
+
+    def save(self, commit=True):
+        course = super().save(commit=commit)
+        if commit:
+            selected_teachers = self.cleaned_data.get('teachers', [])
+            CourseTeacher.objects.filter(course=course).delete()
+            for teacher in selected_teachers:
+                CourseTeacher.objects.create(course=course, teacher=teacher, role='Primary Tutor')
+        return course
+
 
 class CourseEnrollmentForm(forms.ModelForm):
     class Meta:
         model = CourseEnrollment
         fields = ['course', 'student', 'status']
         widgets = {
-            'course': forms.Select(attrs={'class': 'form-control default-select wide'}),
-            'student': forms.Select(attrs={'class': 'form-control default-select wide'}),
+            'course': forms.Select(attrs={'class': 'form-control default-select wide', 'id': 'id_course'}),
+            'student': forms.Select(attrs={'class': 'form-control default-select wide', 'id': 'id_student'}),
             'status': forms.Select(attrs={'class': 'form-control default-select wide'}),
         }
         labels = {
@@ -37,6 +60,35 @@ class CourseEnrollmentForm(forms.ModelForm):
             'student': 'Siswa',
             'status': 'Status Keanggotaan',
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from students.models import Student
+        from django.db.models import Q
+        
+        enrolled_student_ids = CourseEnrollment.objects.values_list('student_id', flat=True)
+        
+        if self.instance and self.instance.pk:
+            self.fields['student'].queryset = Student.objects.filter(
+                Q(pk=self.instance.student_id) | ~Q(pk__in=enrolled_student_ids)
+            ).select_related('user')
+        else:
+            self.fields['student'].queryset = Student.objects.exclude(
+                pk__in=enrolled_student_ids
+            ).select_related('user')
+
+    def clean(self):
+        cleaned_data = super().clean()
+        course = cleaned_data.get('course')
+        student = cleaned_data.get('student')
+        
+        if course and student:
+            existing = CourseEnrollment.objects.filter(course=course, student=student)
+            if self.instance and self.instance.pk:
+                existing = existing.exclude(pk=self.instance.pk)
+            if existing.exists():
+                raise forms.ValidationError(f"Siswa {student} sudah terdaftar di program les '{course.name}'.")
+        return cleaned_data
 
 
 class CourseSessionForm(forms.ModelForm):
@@ -78,3 +130,13 @@ class CourseSessionForm(forms.ModelForm):
             'material': 'Materi',
             'status': 'Status',
         }
+
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user and user.role in ['TUTOR', 'GURU'] and hasattr(user, 'teacher_profile'):
+            teacher_profile = user.teacher_profile
+            assigned_courses = Course.objects.filter(course_teachers__teacher=teacher_profile)
+            if assigned_courses.exists():
+                self.fields['course'].queryset = assigned_courses
+            self.fields['teacher'].initial = teacher_profile
+

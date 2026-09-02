@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from users.decorators import role_required
 from .models import Student
-from .forms import StudentForm, StudentEditForm
+from .forms import StudentForm, StudentEditForm, StudentRegistrationForm
 
 @login_required(login_url='getskills:login')
 @role_required(['ADMIN', 'GURU'])
@@ -14,6 +14,32 @@ def student_list(request):
         "page_title": "Manajemen Siswa"
     }
     return render(request, 'students/student_list.html', context)
+
+
+def register_student(request):
+    if request.user.is_authenticated:
+        return redirect('getskills:index')
+
+    if request.method == 'POST':
+        form = StudentRegistrationForm(request.POST, request.FILES)
+        if form.is_valid():
+            student = form.save()
+            messages.success(
+                request, 
+                f'Registrasi berhasil! Kode Siswa Anda adalah: {student.student_code}. Silakan masuk menggunakan Email atau Kode Siswa.'
+            )
+            return redirect('getskills:login')
+        else:
+            messages.error(request, 'Terjadi kesalahan pada pengisian form. Silakan periksa kembali data Anda.')
+    else:
+        form = StudentRegistrationForm()
+
+    context = {
+        'form': form,
+        'page_title': 'Registrasi Siswa Baru'
+    }
+    return render(request, 'students/student_register.html', context)
+
 
 
 @login_required(login_url='getskills:login')

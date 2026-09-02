@@ -166,8 +166,12 @@
                             </div>
                             {% endif %}
                         </div>
-                         <button type="submit" class="btn btn-secondary mt-4 mb-5 ">Save</button>
-                         <a href="{% url 'getskills:users' %}" class="btn btn-primary mt-4 mb-5">Cancel</a>
+                         <button type="submit" class="btn btn-secondary mt-4 mb-5">Simpan</button>
+                         {% if request.user.role == 'ADMIN' %}
+                             <a href="{% url 'getskills:users' %}" class="btn btn-light mt-4 mb-5">Batal</a>
+                         {% else %}
+                             <a href="{% url 'getskills:user-details' id=request.user.id %}" class="btn btn-light mt-4 mb-5">Batal</a>
+                         {% endif %}
                       </form>
                    </div>
                 </div>

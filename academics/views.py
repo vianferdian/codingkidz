@@ -23,8 +23,20 @@ def class_list(request):
         context = {"enrollments": enrollments, "page_title": "Kelas Saya"}
         return render(request, 'academics/student_class_list.html', context)
     elif role in ['TUTOR', 'GURU']:
-        enrollments = CourseEnrollment.objects.filter(course__sessions__teacher__user=request.user).distinct()
-        context = {"enrollments": enrollments, "page_title": "Kelas Saya"}
+        my_courses = Course.objects.filter(
+            models.Q(course_teachers__teacher__user=request.user) |
+            models.Q(sessions__teacher__user=request.user)
+        ).distinct().order_by('name')
+        
+        enrollments = CourseEnrollment.objects.filter(
+            course__in=my_courses
+        ).distinct().order_by('-joined_at')
+        
+        context = {
+            "courses": my_courses,
+            "enrollments": enrollments,
+            "page_title": "Kelas Saya"
+        }
         return render(request, 'academics/teacher_class_list.html', context)
     else:
         # Admin: show all enrollments
@@ -32,9 +44,21 @@ def class_list(request):
         context = {"enrollments": enrollments, "page_title": "Manajemen Kelas & Pendaftaran"}
         return render(request, 'academics/admin_class_list.html', context)
 
+
+from django.db import models
+
 @login_required(login_url='getskills:login')
 def session_list(request):
-    sessions = CourseSession.objects.all().order_by('session_date', 'start_time')
+    role = request.user.role
+    if role in ['TUTOR', 'GURU'] and hasattr(request.user, 'teacher_profile'):
+        teacher_profile = request.user.teacher_profile
+        sessions = CourseSession.objects.filter(
+            models.Q(teacher=teacher_profile) | 
+            models.Q(course__course_teachers__teacher=teacher_profile)
+        ).distinct().order_by('session_date', 'start_time')
+    else:
+        sessions = CourseSession.objects.all().order_by('session_date', 'start_time')
+
     context = {
         "sessions": sessions,
         "page_title": "Pertemuan Sesi Belajar"
@@ -73,11 +97,20 @@ def add_enrollment(request):
             return redirect('academics:class_list')
     else:
         form = CourseEnrollmentForm()
+
+    import json
+    enrolled_data = {}
+    for e in CourseEnrollment.objects.exclude(status='INACTIVE').values('course_id', 'student_id'):
+        cid = str(e['course_id'])
+        if cid not in enrolled_data:
+            enrolled_data[cid] = []
+        enrolled_data[cid].append(e['student_id'])
         
     context = {
         'form': form,
         'page_title': 'Daftarkan Siswa ke Program/Kelas',
-        'cancel_url': '/academics/class/'
+        'cancel_url': '/academics/class/',
+        'enrolled_mapping_json': json.dumps(enrolled_data)
     }
     return render(request, 'projects/project_form.html', context)
 
@@ -104,16 +137,20 @@ def edit_enrollment(request, enrollment_id):
 
 
 @login_required(login_url='getskills:login')
-@role_required(['ADMIN', 'GURU'])
+@role_required(['ADMIN', 'TUTOR', 'GURU'])
 def add_session(request):
+    user_teacher = getattr(request.user, 'teacher_profile', None)
     if request.method == 'POST':
-        form = CourseSessionForm(request.POST)
+        form = CourseSessionForm(request.POST, user=request.user)
         if form.is_valid():
-            session = form.save()
+            session = form.save(commit=False)
+            if user_teacher and not session.teacher:
+                session.teacher = user_teacher
+            session.save()
             messages.success(request, f"Jadwal Sesi Pertemuan #{session.session_number} ({session.course}) berhasil dibuat.")
             return redirect('academics:session_list')
     else:
-        form = CourseSessionForm()
+        form = CourseSessionForm(user=request.user)
         
     context = {
         'form': form,
@@ -124,17 +161,17 @@ def add_session(request):
 
 
 @login_required(login_url='getskills:login')
-@role_required(['ADMIN', 'GURU'])
+@role_required(['ADMIN', 'TUTOR', 'GURU'])
 def edit_session(request, session_id):
     session = get_object_or_404(CourseSession, id=session_id)
     if request.method == 'POST':
-        form = CourseSessionForm(request.POST, instance=session)
+        form = CourseSessionForm(request.POST, instance=session, user=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, "Jadwal sesi pertemuan berhasil diperbarui.")
             return redirect('academics:session_list')
     else:
-        form = CourseSessionForm(instance=session)
+        form = CourseSessionForm(instance=session, user=request.user)
         
     context = {
         'form': form,
@@ -142,6 +179,7 @@ def edit_session(request, session_id):
         'cancel_url': '/academics/session/'
     }
     return render(request, 'projects/project_form.html', context)
+
 
 
 @login_required(login_url='getskills:login')

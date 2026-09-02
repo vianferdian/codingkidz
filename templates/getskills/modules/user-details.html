@@ -48,20 +48,17 @@
                             <div class="profile-details">
                                 <div class="profile-name px-3 pt-2">
                                     <h4 class="text-primary mb-0">{{ user_obj.first_name }} {{ user_obj.last_name }}</h4>
-                                    
+                                    {% if student_profile %}
+                                        <span class="badge badge-primary mt-1">Kode Siswa: {{ student_profile.student_code }}</span>
+                                    {% else %}
+                                        <span class="badge badge-secondary mt-1">{{ user_obj.role }}</span>
+                                    {% endif %}
                                 </div>
                                 <div class="profile-email px-2 pt-2">
-                                    
                                     <h4 class="text-muted mb-0">{{ user_obj.email }}</h4>  
                                 </div>
-                                <div class="dropdown ms-auto">
-                                    <a href="#" class="btn btn-primary light sharp" data-bs-toggle="dropdown" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg></a>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li class="dropdown-item"><i class="fa fa-user-circle text-primary me-2"></i> View profile</li>
-                                        <li class="dropdown-item"><i class="fa fa-users text-primary me-2"></i> Add to btn-close friends</li>
-                                        <li class="dropdown-item"><i class="fa fa-plus text-primary me-2"></i> Add to group</li>
-                                        <li class="dropdown-item"><i class="fa fa-ban text-primary me-2"></i> Block</li>
-                                    </ul>
+                                <div class="ms-auto pt-2">
+                                    <a href="{% url 'getskills:edit-user' id=user_obj.id %}" class="btn btn-primary btn-sm"><i class="fas fa-pencil-alt me-1"></i> Edit Profil</a>
                                 </div>
                             </div>
                         </div>
@@ -69,70 +66,57 @@
                 </div>
             </div>
         </div>
+
+        {% if student_profile %}
+        <!-- Student Detail Information Card -->
         <div class="row">
-            <div class="col-xl-12">
-                    <div class="card">
-                        <div class="card-header">
-                          
-                            <h4>Groups <br><br>
-                            
-                                {% for g in user_obj.groups.all %}
-                                <span class="badge badge-xs badge-primary"> {{ g.name }} </span>
-                                 {% endfor %}
-                            </h4>
-
-
-                            {% if perms.auth.change_group %}
-                            <span class="badge badge-primary"><a class="text-white" href="{% url 'getskills:groups' %}"><i class="fas fa-pencil-alt"></i></a></span>
-                            {% endif %}
-                        </div>
-
-                        
-                            <div class="card-header">
-                              
-                                <h4>All Available Groups Permissions
-                                </h4>
-
-                            </div>
-
-                        <div class="card-body">
-
-
-                            {% for g_per in user_group_perms %}
-                        
-                                <span class="badge light badge-secondary mb-2">{{ g_per }}</span>
-
-                            {% endfor %}
-                        </div>
-                    </div>
-            </div>
-            
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">{{ user_obj.first_name }} {{ user_obj.last_name }} Permissions</h4>
-                        {% if perms.auth.change_permission %}
-                        <span class="badge badge-primary"><a class="text-white" href="{% url 'getskills:assign-permissions-to-user' id=user_obj.id %}"><i class="fas fa-pencil-alt"></i></a></span>
-                        {% endif %}
+                        <h4 class="card-title text-primary"><i class="fas fa-user-graduate me-2"></i> Detail Informasi Siswa</h4>
                     </div>
                     <div class="card-body">
-                        {% for u_per in user_perms %}
-
-                            <span class="badge light badge-secondary mb-2">{{ u_per }}</span>
-                            
-                        {% endfor %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Kode Siswa:</strong>
+                                <p class="text-dark font-w600 fs-16 mb-0">{{ student_profile.student_code }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Status Akun:</strong>
+                                <p class="mb-0"><span class="badge {% if student_profile.status == 'ACTIVE' %}badge-success{% else %}badge-danger{% endif %}">{{ student_profile.status }}</span></p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Nama Sekolah:</strong>
+                                <p class="text-muted mb-0">{{ student_profile.school_name|default:"-" }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Jenis Kelamin:</strong>
+                                <p class="text-muted mb-0">{{ student_profile.gender|default:user_obj.gender|default:"-" }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Nama Orang Tua / Wali:</strong>
+                                <p class="text-muted mb-0">{{ student_profile.parent_name|default:"-" }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>No. Telp / WA Orang Tua:</strong>
+                                <p class="text-muted mb-0">{{ student_profile.parent_phone|default:"-" }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Tanggal Lahir:</strong>
+                                <p class="text-muted mb-0">{{ student_profile.birth_date|default:"-" }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Alamat:</strong>
+                                <p class="text-muted mb-0">{{ student_profile.address|default:"-" }}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
         </div>
-
-                
-                        
-        </div>
+        {% endif %}
 
         </div>
-
-
-
 {% endblock %}
 
 

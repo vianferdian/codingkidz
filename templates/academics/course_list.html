@@ -28,6 +28,16 @@
                                     <span>Sesi: <strong>{{ course.total_sessions }} Pertemuan</strong></span>
                                     <span class="text-danger font-w600">Rp {{ course.price }}</span>
                                 </div>
+                                <div class="mt-2 text-muted fs-13">
+                                    <i class="fas fa-chalkboard-teacher me-1 text-primary"></i> 
+                                    <strong>Tutor:</strong> 
+                                    {% for ct in course.course_teachers.all %}
+                                        <span class="badge badge-xs badge-outline-primary mb-1">{{ ct.teacher.user.first_name }} {{ ct.teacher.user.last_name }}</span>
+                                    {% empty %}
+                                        <span class="text-muted">Belum Ditentukan</span>
+                                    {% endfor %}
+                                </div>
+
                                 {% if request.user.role == 'ADMIN' %}
                                 <div class="d-flex justify-content-end gap-2 mt-3">
                                     <a href="{% url 'academics:edit_course' course.id %}" class="btn btn-warning btn-xxs shadow"><i class="fa fa-edit"></i> Edit</a>

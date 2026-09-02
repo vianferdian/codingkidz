@@ -542,7 +542,7 @@
                     <span class="qi-label">Tagihan Saya</span>
                     {% if unpaid_invoices_count > 0 %}<span class="badge badge-danger qi-badge">{{ unpaid_invoices_count }}</span>{% endif %}
                 </a>
-                <a href="{% url 'attendance:student_attendance_list' %}" class="nck-quick-item">
+                <a href="{% url 'attendance:attendance_list' %}" class="nck-quick-item">
                     <div class="qi-icon" style="background: rgba(153, 102, 255, 0.15); color: #9966ff;"><i class="fas fa-calendar-check"></i></div>
                     <span class="qi-label">Kehadiran Saya</span>
                 </a>

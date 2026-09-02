@@ -199,7 +199,7 @@ def admin_trigger_billing(request):
             request, 
             f"Proses tagihan bulanan selesai. Berhasil mencetak {created_count} invoice baru. {skipped_count} invoice dilewati karena sudah ada."
         )
-    return redirect('payments:admin_payment_verification')
+    return redirect('payments:admin_invoice_list')
 
 
 # Invoices

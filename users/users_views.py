@@ -56,13 +56,14 @@ def change_password(request):
 @login_required(login_url='getskills:login')
 @permission_required({'users.view_customuser'}, raise_exception=True)
 def users(request):
-	user_list = CustomUser.objects.filter(is_superuser=False).order_by('groups__name')
-	paginator = Paginator(user_list, 7) # Show 7 Users per page.
+	from django.db.models import Q
+	user_list = CustomUser.objects.filter(Q(role='ADMIN') | Q(is_superuser=True)).order_by('-id')
+	paginator = Paginator(user_list, 10)
 	context={
 		"user_list" : paginator.get_page(request.GET.get('page')),
-		 "page_title":"Users"
+		"page_title": "Daftar Akun Admin / Pengurus"
 	}
-	return render(request, "getskills/modules/users.html",context)
+	return render(request, "getskills/modules/users.html", context)
 
 @login_required(login_url='getskills:login')
 def user_details(request,id):
@@ -113,15 +114,18 @@ def add_user(request):
 	if request.method == 'POST':
 		form = CustomUserForm(request.POST, request.FILES)
 		if form.is_valid():
-			user_obj = form.save()
+			user_obj = form.save(commit=False)
+			user_obj.role = 'ADMIN'
+			user_obj.is_staff = True
+			user_obj.save()
 			user_obj.groups.clear()
-			for i in form.cleaned_data.get('groups'):
+			for i in form.cleaned_data.get('groups', []):
 				user_obj.groups.add(i)
-			messages.success(request,f'{user_obj.first_name} {user_obj.last_name} is created successfully')
+			messages.success(request, f'Akun Admin {user_obj.first_name} {user_obj.last_name} berhasil dibuat.')
 			return redirect('getskills:users')
 	else:
 		form = CustomUserForm()		
-	return render(request, 'getskills/modules/add-user.html', {'form': form,"page_title":"Add User"})
+	return render(request, 'getskills/modules/add-user.html', {'form': form, "page_title": "Tambah Admin Baru"})
 
 
 def signup(request):

@@ -20,18 +20,18 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Users Table</h4>
+                    <h4 class="card-title">Daftar Akun Admin / Pengurus</h4>
                     
                     <div class="d-flex">
 
                         {% if perms.users.delete_customuser %}
                        
-                        <button type="submit" id="delete_multiple_btn" class="btn light btn-outline-primary btn-sm me-2 ">Delete</button>
+                        <button type="submit" id="delete_multiple_btn" class="btn light btn-outline-primary btn-sm me-2 ">Hapus Pilihan</button>
                         
                         {% endif %}
 
                         {% if perms.users.add_customuser %}
-                        <a href="{% url 'getskills:add-user' %}" class="btn btn-primary btn-sm ">ADD USER  <span class="btn-icon-end">
+                        <a href="{% url 'getskills:add-user' %}" class="btn btn-primary btn-sm ">TAMBAH ADMIN  <span class="btn-icon-end">
                             <i class="fa fa-plus"></i></span>
                         </a>
                         {% endif %}

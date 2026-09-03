@@ -83,7 +83,7 @@
                                     <td>
                                         <a href="{% url 'getskills:user-details' id=user.id %}">
                                         <div class="d-flex align-items-center">
-                                            <img src="/media/{{ user.avatar }}" class="rounded-lg me-2" width="24" alt=""> 
+                                            <img src="/media/{{ user.avatar }}" class="rounded-circle me-2" width="32" height="32" style="object-fit: cover; border-radius: 50% !important;" alt=""> 
                                             <span class="w-space-no">{{ user.first_name }} {{ user.last_name }}</span>
                                         </div>
                                     </a>

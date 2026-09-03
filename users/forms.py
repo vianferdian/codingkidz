@@ -99,29 +99,34 @@ class CustomUserForm(forms.ModelForm):
 class EditUserForm(forms.ModelForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
-    dob = forms.CharField(required=True)
-    phone_number = forms.CharField(required=True)
+    dob = forms.CharField(required=False)
+    phone_number = forms.CharField(required=False)
 
-    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(),required=False)
-   
     GENDER_CHOICES = (
-        ('','Choose gender'),
-        ('Male', 'Male'),
-        ('Female', 'Female'),
-        ('Others', 'Others'),
+        ('','Pilih Jenis Kelamin'),
+        ('Male', 'Laki-laki'),
+        ('Female', 'Perempuan'),
     )
-    gender = forms.ChoiceField(choices=GENDER_CHOICES, required=True)
+    gender = forms.ChoiceField(choices=GENDER_CHOICES, required=False)
+
+    ROLE_CHOICES = (
+        ('ADMIN', 'Admin / Pengurus'),
+        ('TUTOR', 'Tutor / Pengajar'),
+        ('GURU', 'Guru'),
+        ('STUDENT', 'Siswa'),
+    )
+    role = forms.ChoiceField(choices=ROLE_CHOICES, required=False)
 
     class Meta:
         model = CustomUser
         fields = ('email',
                   'first_name',
                   'last_name',
+                  'role',
                   'gender',
                   'avatar',
                   'dob',
                   'phone_number',
-                  'groups',
                   'about',
                   'is_active',
                 )

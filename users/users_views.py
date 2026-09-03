@@ -229,18 +229,19 @@ def edit_user(request,id):
 	if request.method == 'POST':
 		form = EditUserForm(request.POST, request.FILES, instance=user_obj)
 		if form.is_valid():
-			user_obj = form.save()
-			if 'groups' in form.cleaned_data:
-				user_obj.groups.clear()
-				for i in form.cleaned_data['groups']:
-					user_obj.groups.add(i)
+			old_role = user_obj.role
+			user_obj = form.save(commit=False)
+			if not user_obj.role:
+				user_obj.role = old_role
+			user_obj.save()
 			if request.user.id == id:
 				messages.success(request, "Profil Anda berhasil diperbarui.")
 				return redirect('getskills:user-details', id=id)
+			messages.success(request, f"Data pengguna {user_obj.first_name} {user_obj.last_name} berhasil diperbarui.")
 			return redirect('getskills:users')
 	else:
 		form = EditUserForm(instance=user_obj)
-	return render(request, 'getskills/modules/add-user.html', {'form': form,"page_title":"Edit User"})
+	return render(request, 'getskills/modules/add-user.html', {'form': form, "page_title": f"Edit User - {user_obj.first_name} {user_obj.last_name}"})
 
 
 def login_user(request):

@@ -3,7 +3,19 @@
 
 
 {% block additional_css %}
-
+<style>
+.avatar-upload .avatar-preview, 
+.avatar-upload .avatar-preview #imagePreview {
+    width: 130px !important;
+    height: 130px !important;
+    border-radius: 50% !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+</style>
 {% endblock %}
 
 {% block message %}
@@ -16,7 +28,7 @@
           <div class="col-xl-12 col-lg-12">
              <div class="card">
                 <div class="card-header">
-                   <h4 class="card-title">New User Form</h4>
+                   <h4 class="card-title">{{ page_title }}</h4>
                 </div>
                 <div class="card-body">
                    <div class="basic-form">
@@ -97,23 +109,30 @@
                         
                         <div class="row">
                            <div class="mb-3 col-md-4 custom-user">
-                              <label class="form-label">Peran / Role {% if form.role.field.required %}<span class="text-danger">*</span>{% endif %}</label>
-                              {{ form.role|attr:"class:form-control default-select wide" }}
+                              <label class="form-label">Peran / Role</label>
+                              {% if form.instance and form.instance.pk %}
+                                  <input type="text" class="form-control" value="{{ form.instance.get_role_display|default:form.instance.role }}" readonly disabled style="background-color: #f0f2f5; cursor: not-allowed; font-weight: 600; color: #495057;">
+                                  <input type="hidden" name="role" value="{{ form.instance.role }}">
+                              {% else %}
+                                  {{ form.role|attr:"class:form-control default-select wide" }}
+                              {% endif %}
                               <div class="text-danger w-100 d-block mt-1">
                               {{ form.role.errors }}
                               </div>
                            </div>
                             <div class="mb-3 col-md-4 custom-user">
-                               <label class="form-label">Gender {% if form.gender.field.required %}<span class="text-danger">*</span>{% endif %}</label>
+                               <label class="form-label">Jenis Kelamin {% if form.gender.field.required %}<span class="text-danger">*</span>{% endif %}</label>
                                {{ form.gender|attr:"class:form-control from-height-1 default-select wide" }}
                                <div class="text-danger w-100 d-block mt-1 ">
                                {{ form.gender.errors }}
                                </div>
                             </div>
-                            <div class="mb-3 col-md-4 custom-date-picker">
-                               <label class="form-label">Date of Birth {% if form.dob.field.required %}<span class="text-danger">*</span>{% endif %}</label>
-                             
-                                {{ form.dob|attr:"class:form-control"|attr:"type:date"}} 
+                            <div class="mb-3 col-md-4">
+                               <label class="form-label">Tanggal Lahir {% if form.dob.field.required %}<span class="text-danger">*</span>{% endif %}</label>
+                               <div class="input-group">
+                                  {{ form.dob|attr:"class:form-control"|attr:"type:date"}} 
+                                  <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                               </div>
                                <div class="text-danger w-100 d-block mt-1">
                                {{ form.dob.errors }}
                                </div>

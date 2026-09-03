@@ -10,7 +10,8 @@ from users.forms import ( CustomUserForm,
 						  EditUserForm,
 						)
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.decorators import login_required, permission_required 
+from django.contrib.auth.decorators import login_required, permission_required
+from users.decorators import role_required
 from django.contrib.auth.models import Group, Permission
 from django.db.models import Count
 from django.http import HttpResponse, JsonResponse
@@ -54,7 +55,7 @@ def change_password(request):
 
 
 @login_required(login_url='getskills:login')
-@permission_required({'users.view_customuser'}, raise_exception=True)
+@role_required(['ADMIN'])
 def users(request):
 	from django.db.models import Q
 	user_list = CustomUser.objects.filter(Q(role='ADMIN') | Q(is_superuser=True)).order_by('-id')
@@ -67,9 +68,9 @@ def users(request):
 
 @login_required(login_url='getskills:login')
 def user_details(request,id):
-	if request.user.id != id and not request.user.has_perm('users.view_customuser'):
+	if request.user.id != id and request.user.role != 'ADMIN':
 		from django.core.exceptions import PermissionDenied
-		raise PermissionDenied("You do not have permission to view this resource.")
+		raise PermissionDenied("Anda tidak memiliki izin untuk melihat halaman ini.")
 	user_obj=get_object_or_404(CustomUser,id=id)
 	student_profile = getattr(user_obj, 'student_profile', None)
 
@@ -85,7 +86,7 @@ def user_details(request,id):
 
 
 @login_required(login_url='getskills:login')
-@permission_required({'users.view_customuser','users.delete_customuser'},raise_exception=True)
+@role_required(['ADMIN'])
 def delete_user(request,id):
 	u = CustomUser.objects.get(id=id)
 	u.delete()
@@ -94,7 +95,7 @@ def delete_user(request,id):
 
 
 @login_required(login_url='getskills:login')
-@permission_required({'users.view_customuser','users.delete_customuser'},raise_exception=True)
+@role_required(['ADMIN'])
 def delete_multiple_user(request):
 	id_list=request.POST.getlist('id[]')
 	id_list = [i for i in id_list if i != '']
@@ -109,7 +110,7 @@ def delete_multiple_user(request):
 
 
 @login_required(login_url='getskills:login')
-@permission_required({'users.view_customuser','users.add_customuser'}, raise_exception=True)
+@role_required(['ADMIN'])
 def add_user(request):
 	if request.method == 'POST':
 		form = CustomUserForm(request.POST, request.FILES)
@@ -195,9 +196,9 @@ def activate(request, uidb64, token):
 
 @login_required(login_url='getskills:login')
 def edit_user(request,id):
-	if request.user.id != id and not (request.user.has_perm('users.view_customuser') and request.user.has_perm('users.change_customuser')):
+	if request.user.id != id and request.user.role != 'ADMIN':
 		from django.core.exceptions import PermissionDenied
-		raise PermissionDenied("You do not have permission to perform this action.")
+		raise PermissionDenied("Anda tidak memiliki izin untuk mengedit pengguna ini.")
 	user_obj = get_object_or_404(CustomUser,id=id)
 
 	if hasattr(user_obj, 'student_profile'):

@@ -115,17 +115,16 @@ def add_user(request):
 		form = CustomUserForm(request.POST, request.FILES)
 		if form.is_valid():
 			user_obj = form.save(commit=False)
-			user_obj.role = 'ADMIN'
-			user_obj.is_staff = True
+			if not user_obj.role:
+				user_obj.role = 'ADMIN'
+			if user_obj.role == 'ADMIN':
+				user_obj.is_staff = True
 			user_obj.save()
-			user_obj.groups.clear()
-			for i in form.cleaned_data.get('groups', []):
-				user_obj.groups.add(i)
-			messages.success(request, f'Akun Admin {user_obj.first_name} {user_obj.last_name} berhasil dibuat.')
+			messages.success(request, f'Akun {user_obj.get_role_display()} ({user_obj.first_name} {user_obj.last_name}) berhasil dibuat.')
 			return redirect('getskills:users')
 	else:
 		form = CustomUserForm()		
-	return render(request, 'getskills/modules/add-user.html', {'form': form, "page_title": "Tambah Admin Baru"})
+	return render(request, 'getskills/modules/add-user.html', {'form': form, "page_title": "Tambah Admin / Pengguna Baru"})
 
 
 def signup(request):

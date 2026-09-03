@@ -46,24 +46,30 @@ class CustomUserForm(forms.ModelForm):
     phone_number = forms.CharField(required=True)
     
     GENDER_CHOICES = (
-        ('','Choose gender'),
-        ('Male', 'Male'),
-        ('Female', 'Female'),
-        ('Others', 'Others'),
+        ('','Pilih Jenis Kelamin'),
+        ('Male', 'Laki-laki'),
+        ('Female', 'Perempuan'),
     )
-    gender = forms.ChoiceField(choices=GENDER_CHOICES, required=True)
+    gender = forms.ChoiceField(choices=GENDER_CHOICES, required=False)
 
+    ROLE_CHOICES = (
+        ('ADMIN', 'Admin / Pengurus'),
+        ('TUTOR', 'Tutor / Pengajar'),
+        ('GURU', 'Guru'),
+        ('STUDENT', 'Siswa'),
+    )
+    role = forms.ChoiceField(choices=ROLE_CHOICES, initial='ADMIN', required=True)
 
     class Meta:
         model = CustomUser
         fields = ('email',
                   'first_name',
                   'last_name',
+                  'role',
                   'gender',
                   'avatar',
                   'dob',
                   'phone_number',
-                  'groups',
                   'about',
                   'is_active',
                   'password1',

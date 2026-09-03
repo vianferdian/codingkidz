@@ -97,10 +97,10 @@
                         
                         <div class="row">
                            <div class="mb-3 col-md-4 custom-user">
-                              <label class="form-label">Role {% if form.groups.field.required %}<span class="text-danger">*</span>{% endif %}</label>
-                              {{ form.groups|attr:"class:multi-select form-control"|attr:"name:groups[]" }}
+                              <label class="form-label">Peran / Role {% if form.role.field.required %}<span class="text-danger">*</span>{% endif %}</label>
+                              {{ form.role|attr:"class:form-control default-select wide" }}
                               <div class="text-danger w-100 d-block mt-1">
-                              {{ form.groups.errors }}
+                              {{ form.role.errors }}
                               </div>
                            </div>
                             <div class="mb-3 col-md-4 custom-user">
